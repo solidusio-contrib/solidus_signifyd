@@ -1,7 +1,7 @@
 SpreeSignifyd
 =============
 
-Introduction goes here.
+Integration with Signifyd that implements a fraud check prior to marking a shipment as ready to be shipped.
 
 Installation
 ------------
