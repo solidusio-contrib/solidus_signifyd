@@ -8,6 +8,22 @@ module SpreeSignifyd
 
     def approved_by(user)
       super
+      update_shipments
+    end
+
+    def signifyd_approve
+      return if is_risky?
+
+      update_attributes(
+        considered_risky: false,
+        approved_at: Time.now
+      )
+      update_shipments
+    end
+
+    private
+
+    def update_shipments
       shipments.each { |shipment| shipment.update!(self) }
       updater.update_shipment_state
       save

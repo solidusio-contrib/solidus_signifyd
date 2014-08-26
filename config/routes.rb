@@ -1,3 +1,7 @@
 Spree::Core::Engine.routes.draw do
-  # Add your extension routes here
+  namespace :api, defaults: { format: 'json' } do
+    namespace :spree_signifyd do
+      post '/orders', to: 'orders#update'
+    end
+  end
 end

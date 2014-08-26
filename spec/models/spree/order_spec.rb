@@ -58,4 +58,42 @@ describe Spree::Order, :type => :model do
       subject.approved_by(user)
     end
   end
+
+  describe "#signifyd_approve" do
+
+    subject { order.signifyd_approve }
+
+    context "risky order" do
+      before(:each) { order.stub(:is_risky?).and_return(true) }
+
+      it "does not update the order" do
+        order.should_not_receive(:update_attributes)
+        subject
+      end
+
+      it "does not update the shipments" do
+        order.shipments.each { |shipment| shipment.should_not_receive(:update!) }
+        subject
+      end
+    end
+
+    context "non-risky order" do
+      before(:each) { order.stub(:is_risky?).and_return(false) }
+
+      it "sets approved_at" do
+        subject
+        expect(order.approved_at).to_not eq nil
+      end
+
+      it "sets considered_risky" do
+        subject
+        expect(order.considered_risky).to eq false
+      end
+
+      it 'updates all shipments' do
+        order.shipments.each { |shipment| shipment.should_receive(:update!) }
+        subject
+      end
+    end
+  end
 end
