@@ -1,3 +1,5 @@
 require 'spree_core'
+require 'signifyd'
+require 'spree_signifyd/create_signifyd_case'
 require 'spree_signifyd/engine'
 require 'spree_signifyd/request_verifier'

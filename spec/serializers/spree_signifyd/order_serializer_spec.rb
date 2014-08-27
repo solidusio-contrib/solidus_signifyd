@@ -2,7 +2,8 @@ require 'spec_helper'
 
 module SpreeSignifyd
   describe OrderSerializer do
-    let(:order) { create(:shipped_order) }
+    let(:order) { create(:shipped_order, line_items_count: 1) }
+    let(:line_item) { order.line_items.first }
     let(:serialized_order) { JSON.parse(OrderSerializer.new(order).to_json) }
 
     describe "node values" do
@@ -10,24 +11,16 @@ module SpreeSignifyd
 
         let(:purchase) { serialized_order['purchase'] }
 
-        it "browserIpAddress" do
-          purchase['browserIpAddress'].should eq order.last_ip_address
-        end
+        it { purchase['browserIpAddress'].should eq order.last_ip_address }
+        it { purchase['orderId'].should eq order.number }
+        it { purchase['createdAt'].should eq order.completed_at.utc.iso8601 }
+        it { purchase['currency'].should eq order.currency }
+        it { purchase['totalPrice'].should eq order.total.to_s }
+        it { purchase['avsResponseCode'].should eq order.latest_payment.avs_response }
+        it { purchase['cvvResponseCode'].should eq order.latest_payment.cvv_response_code }
 
-        it "orderId" do
-          purchase['orderId'].should eq order.number
-        end
-
-        it "createdAt" do
-          purchase['createdAt'].should eq order.completed_at.utc.iso8601
-        end
-
-        it "currency" do
-          purchase['currency'].should eq order.currency
-        end
-
-        it "totalPrice" do
-          purchase['totalPrice'].should eq order.total.to_s
+        it "contains a products node" do
+          purchase['products'].should eq [ JSON.parse(SpreeSignifyd::LineItemSerializer.new(line_item).to_json) ]
         end
       end
 
@@ -37,9 +30,23 @@ module SpreeSignifyd
 
       context "recipient" do
         it { serialized_order.should include 'recipient' }
+        it { serialized_order["recipient"]["confirmationEmail"].should eq order.email }
+      end
 
-        it "includes the confirmationEmail" do
-          serialized_order["recipient"]["confirmationEmail"].should eq order.email
+      context "card" do
+        it { serialized_order.should include 'card' }
+
+        context "credit card payment" do
+          let!(:payment) { create(:payment, order: order) }
+
+          it { serialized_order["card"].should include 'billingAddress'}
+        end
+
+        context "non credit card payment" do
+          it "contains no data" do
+            Spree::CreditCard.any_instance.stub(:instance_of?).and_return(false)
+            expect(serialized_order["card"]).to eq({})
+          end
         end
       end
     end

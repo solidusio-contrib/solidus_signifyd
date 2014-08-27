@@ -4,13 +4,9 @@ module SpreeSignifyd
   class AddressSerializer < ActiveModel::Serializer
     self.root = false
 
-    attributes :fullName, :deliveryAddress
+    attributes :address
 
-    def fullName
-      object.full_name
-    end
-
-    def deliveryAddress
+    def address
       {
         'streetAddress' => object.address1,
         'unit' => object.address2,

@@ -71,6 +71,8 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+
+    Signifyd::Case.stub(:create).and_return({ code: 201, body: { investigationId: 123 } })
   end
 
   # After each spec clean the database.
@@ -78,6 +80,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  config.expose_current_running_example_as :example
   config.fail_fast = ENV['FAIL_FAST'] || false
   config.order = "random"
   config.infer_spec_type_from_file_location!

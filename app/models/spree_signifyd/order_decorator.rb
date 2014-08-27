@@ -1,5 +1,13 @@
-module SpreeSignifyd
-  module OrderDecorator
+module SpreeSignifyd::OrderDecorator
+  extend ActiveSupport::Concern
+
+  included do
+    Spree::Order.state_machine.after_transition to: :complete, do: :create_signifyd_case
+
+    prepend(InstanceMethods)
+  end
+
+  module InstanceMethods
 
     def is_risky?
       return true if !signifyd_score
@@ -8,7 +16,7 @@ module SpreeSignifyd
 
     def approved_by(user)
       super
-      update_shipments
+      update_shipments_after_approval
     end
 
     def signifyd_approve
@@ -18,12 +26,20 @@ module SpreeSignifyd
         considered_risky: false,
         approved_at: Time.now
       )
-      update_shipments
+      update_shipments_after_approval
+    end
+
+    def create_signifyd_case
+      SpreeSignifyd::CreateSignifydCase.perform(id)
+    end
+
+    def latest_payment
+      payments.order("created_at DESC").first
     end
 
     private
 
-    def update_shipments
+    def update_shipments_after_approval
       shipments.each { |shipment| shipment.update!(self) }
       updater.update_shipment_state
       save
@@ -31,4 +47,4 @@ module SpreeSignifyd
   end
 end
 
-Spree::Order.prepend SpreeSignifyd::OrderDecorator
+Spree::Order.include SpreeSignifyd::OrderDecorator

@@ -96,4 +96,24 @@ describe Spree::Order, :type => :model do
       end
     end
   end
+
+  describe "#lastest_payment" do
+    let(:order) { create(:order) }
+    let!(:old_payment) { create(:payment, order: order, created_at: 30.days.ago)}
+    let!(:new_payment) { create(:payment, order: order) }
+
+    it "finds the latest payment" do
+      expect(order.latest_payment).to eq new_payment
+    end
+  end
+
+  describe "transition to complete" do
+    let(:order) { create(:order_with_line_items, state: 'confirm') }
+    let!(:payment) { create(:payment, amount: order.total, order: order ) }
+
+    it "calls #create_signifyd_case" do
+      order.should_receive(:create_signifyd_case)
+      order.next!
+    end
+  end
 end

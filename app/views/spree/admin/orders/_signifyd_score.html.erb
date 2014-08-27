@@ -1,0 +1,10 @@
+<tr>
+  <td><strong><%= Spree.t(:"risk.signifyd_score") %>:</strong></td>
+  <td class="align-center">
+    <% if @order.signifyd_score.nil? %>
+      <span class="state pending"><%= Spree.t(:"risk.awaiting_score") %></span>
+    <% else %>
+      <span class="state void"><%= @order.signifyd_score %></span>
+    <% end %>
+  </td>
+</tr>
