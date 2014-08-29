@@ -4,6 +4,15 @@ describe Spree::Order, :type => :model do
 
   let!(:order) { create(:order_ready_to_ship, line_items_count: 1) }
 
+  describe "#complete_and_approved" do
+    let!(:incomplete_order) { create(:order) }
+    let!(:approved_order) { create(:order_ready_to_ship, line_items_count: 1, approved_at: Time.now) }
+
+    it "only returns orders that are complete and approved" do
+      expect(Spree::Order.complete_and_approved).to eq [approved_order]
+    end
+  end
+
   describe "#is_risky?" do
     subject { order.is_risky? }
 
@@ -63,35 +72,24 @@ describe Spree::Order, :type => :model do
 
     subject { order.signifyd_approve }
 
-    context "risky order" do
-      before(:each) { order.stub(:is_risky?).and_return(true) }
-
-      it "does not update the order" do
-        order.should_not_receive(:update_attributes)
-        subject
-      end
-
-      it "does not update the shipments" do
-        order.shipments.each { |shipment| shipment.should_not_receive(:update!) }
-        subject
+    context "no default_approver" do
+      it 'raises an error' do
+        expect { subject }.to raise_error
       end
     end
 
-    context "non-risky order" do
-      before(:each) { order.stub(:is_risky?).and_return(false) }
+    context "default_approver exists" do
+      let(:user) { create(:user) }
 
-      it "sets approved_at" do
-        subject
-        expect(order.approved_at).to_not eq nil
+      before(:each) do
+        @default_approver_email = SpreeSignifyd::Config[:default_approver_email]
+        SpreeSignifyd::Config[:default_approver_email] = user.email
       end
 
-      it "sets considered_risky" do
-        subject
-        expect(order.considered_risky).to eq false
-      end
+      after(:each) { @default_approver_email = SpreeSignifyd::Config[:default_approver_email] }
 
-      it 'updates all shipments' do
-        order.shipments.each { |shipment| shipment.should_receive(:update!) }
+      it "calls approved_by with the default approver user" do
+        order.should_receive(:approved_by).with(user)
         subject
       end
     end

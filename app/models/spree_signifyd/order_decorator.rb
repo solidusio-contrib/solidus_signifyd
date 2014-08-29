@@ -3,6 +3,7 @@ module SpreeSignifyd::OrderDecorator
 
   included do
     Spree::Order.state_machine.after_transition to: :complete, do: :create_signifyd_case
+    scope :complete_and_approved, -> { complete.where.not(approved_at: nil) }
 
     prepend(InstanceMethods)
   end
@@ -20,13 +21,9 @@ module SpreeSignifyd::OrderDecorator
     end
 
     def signifyd_approve
-      return if is_risky?
-
-      update_attributes(
-        considered_risky: false,
-        approved_at: Time.now
-      )
-      update_shipments_after_approval
+      default_approver = Spree::User.find_by(email: SpreeSignifyd::Config[:default_approver_email])
+      raise 'No user was found for the default_approver_email preference. Cannot approve order.' if default_approver.blank?
+      approved_by(default_approver)
     end
 
     def create_signifyd_case
