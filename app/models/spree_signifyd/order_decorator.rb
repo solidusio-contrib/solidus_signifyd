@@ -27,7 +27,7 @@ module SpreeSignifyd::OrderDecorator
     end
 
     def create_signifyd_case
-      SpreeSignifyd::CreateSignifydCase.perform(id)
+      Resque.enqueue(SpreeSignifyd::CreateSignifydCase, id)
     end
 
     def latest_payment
