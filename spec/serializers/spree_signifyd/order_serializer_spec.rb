@@ -16,8 +16,18 @@ module SpreeSignifyd
         it { purchase['createdAt'].should eq order.completed_at.utc.iso8601 }
         it { purchase['currency'].should eq order.currency }
         it { purchase['totalPrice'].should eq order.total.to_s }
-        it { purchase['avsResponseCode'].should eq order.latest_payment.avs_response }
-        it { purchase['cvvResponseCode'].should eq order.latest_payment.cvv_response_code }
+
+        context "with a payment" do
+          it { purchase['avsResponseCode'].should eq order.latest_payment.avs_response }
+          it { purchase['cvvResponseCode'].should eq order.latest_payment.cvv_response_code }
+        end
+
+        context "without a payment" do
+          let(:order) { create(:completed_order_with_totals) }
+
+          it { purchase['avsResponseCode'].should be nil }
+          it { purchase['cvvResponseCode'].should be nil }
+        end
 
         it "contains a products node" do
           purchase['products'].should eq [ JSON.parse(SpreeSignifyd::LineItemSerializer.new(line_item).to_json) ]
@@ -40,6 +50,14 @@ module SpreeSignifyd
           let!(:payment) { create(:payment, order: order) }
 
           it { serialized_order["card"].should include 'billingAddress'}
+        end
+
+        context "no payment source" do
+          let(:order) { create(:completed_order_with_totals) }
+
+          it "contains no data" do
+            expect(serialized_order["card"]).to eq({})
+          end
         end
 
         context "non credit card payment" do

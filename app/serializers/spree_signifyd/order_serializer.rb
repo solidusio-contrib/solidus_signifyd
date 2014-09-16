@@ -15,8 +15,8 @@ module SpreeSignifyd
         'currency' => object.currency,
         'totalPrice' => object.total,
         'products' => products,
-        'avsResponseCode' => latest_payment.avs_response,
-        'cvvResponseCode' => latest_payment.cvv_response_code
+        'avsResponseCode' => latest_payment.try(:avs_response),
+        'cvvResponseCode' => latest_payment.try(:cvv_response_code)
       }
     end
 
@@ -28,8 +28,7 @@ module SpreeSignifyd
     end
 
     def card
-      # TODO what happens if there are multiple credit cards?
-      payment_source = latest_payment.source
+      payment_source = latest_payment.try(:source)
       card = {}
 
       if payment_source.present? && payment_source.instance_of?(Spree::CreditCard)
