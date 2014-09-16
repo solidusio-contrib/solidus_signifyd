@@ -22,9 +22,7 @@ module Spree::Api::SpreeSignifyd
 
     def authorize
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
-      logger.error("Signifyd Hmac Sha: #{request_sha}")
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
-      logger.error("Computed sha: #{computed_sha}")
 
       if request_sha != computed_sha
         render(nothing: true, status: 401) and return false
