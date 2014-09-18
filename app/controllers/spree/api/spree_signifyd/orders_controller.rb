@@ -24,6 +24,8 @@ module Spree::Api::SpreeSignifyd
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
 
+      Rails.logger.error "request_sha present: #{request_sha.present?}"
+
       if request_sha != computed_sha
         render(nothing: true, status: 401) and return false
       end
