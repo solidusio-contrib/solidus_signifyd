@@ -20,8 +20,14 @@ module SpreeSignifyd
         expect(address['city']).to eq ship_address.city
       end
 
-      it "provinceCode" do
-        expect(address['provinceCode']).to eq ship_address.state.abbr
+      describe "provinceCode" do
+        it "with a state entity associated" do
+          expect(address['provinceCode']).to eq ship_address.state.abbr
+        end
+        it "with a state_name and no state entity" do
+          ship_address.update_attributes!(state_name: ship_address.state.name, state_id: nil)
+          expect(address['provinceCode']).to eq ship_address.state_name
+        end
       end
 
       it "postalCode" do

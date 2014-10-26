@@ -11,7 +11,7 @@ module SpreeSignifyd
         'streetAddress' => object.address1,
         'unit' => object.address2,
         'city' => object.city,
-        'provinceCode' => object.state.abbr,
+        'provinceCode' => object.state_text,
         'postalCode' => object.zipcode,
         'countryCode' => object.country.iso
       }
