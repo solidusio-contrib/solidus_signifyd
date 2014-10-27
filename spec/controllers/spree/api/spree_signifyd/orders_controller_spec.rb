@@ -91,8 +91,11 @@ module Spree::Api::SpreeSignifyd
         context "the order has been canceled" do
           before(:each) { order.cancel! }
 
-          it "raises an error" do
-            expect{ subject }.to raise_error("Attempting to approve/deny order ##{order.number} via Signifyd, but it has already been canceled")
+          it "returns without trying to act on the order" do
+            expect { Spree::Order.any_instance }.not_to receive(:signifyd_approve)
+            expect { Spree::Order.any_instance }.not_to receive(:cancel!)
+            expect { subject }.not_to raise_error
+            expect(response).to be_success
           end
         end
 
