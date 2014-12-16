@@ -12,7 +12,7 @@ module SpreeSignifyd::OrderDecorator
 
     def is_risky?
       return true if !signifyd_score
-      signifyd_score < SpreeSignifyd::Config[:signifyd_score_threshold]
+      signifyd_score <= SpreeSignifyd::Config[:signifyd_score_threshold]
     end
 
     def approved_by(user)
