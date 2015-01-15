@@ -34,5 +34,26 @@ describe Spree::Shipment, :type => :model do
         subject
       end
     end
+
+    context "shipment state" do
+      [:shipped, :ready].each do |state|
+        context "the shipment is #{state}" do
+          before { shipment.update_columns(state: state) }
+          it "defaults to existing behavior" do
+            shipment.should_receive(:determine_state).with(shipment.order)
+            subject
+          end
+        end
+      end
+
+      [:pending, :canceled].each do |state|
+        context "the shipment is #{state}" do
+          before { shipment.update_columns(state: state) }
+          it "is pending" do
+            subject.should eq "pending"
+          end
+        end
+      end
+    end
   end
 end

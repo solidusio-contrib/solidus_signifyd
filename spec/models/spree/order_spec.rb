@@ -111,7 +111,7 @@ describe Spree::Order, :type => :model do
 
     it "calls #create_signifyd_case" do
       order.should_receive(:create_signifyd_case)
-      order.next!
+      order.complete!
     end
   end
 end
