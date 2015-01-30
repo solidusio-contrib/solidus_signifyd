@@ -82,9 +82,12 @@ module Spree::Api::SpreeSignifyd
 
         context "the order has been shipped" do
 
-          it "raises an error" do
+          it "returns without trying to act on the order" do
             Spree::Order.any_instance.stub(:shipped?).and_return(true)
-            expect{ subject }.to raise_error("Attempting to approve/deny order ##{order.number} via Signifyd, but it has already been shipped")
+            expect { Spree::Order.any_instance }.not_to receive(:signifyd_approve)
+            expect { Spree::Order.any_instance }.not_to receive(:cancel!)
+            expect { subject }.not_to raise_error
+            expect(response).to be_success
           end
         end
 

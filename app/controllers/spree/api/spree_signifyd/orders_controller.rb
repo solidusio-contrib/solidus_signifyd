@@ -38,9 +38,7 @@ module Spree::Api::SpreeSignifyd
     end
 
     def order_canceled_or_shipped
-      if @order.shipped?
-        raise "Attempting to approve/deny order ##{@order.number} via Signifyd, but it has already been shipped"
-      elsif @order.canceled?
+      if @order.shipped? || @order.canceled?
         render nothing: true, status: 200 and return false
       end
     end
