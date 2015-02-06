@@ -17,7 +17,6 @@ describe Spree::Order, :type => :model do
     subject { order.is_risky? }
 
     context "no signifyd_score" do
-      before { order.signifyd_score = nil }
       it { should be true }
     end
 
@@ -25,12 +24,12 @@ describe Spree::Order, :type => :model do
       let(:signifyd_score_threshold) { SpreeSignifyd::Config[:signifyd_score_threshold] }
 
       context "greater than threshold" do
-        before { order.signifyd_score = signifyd_score_threshold + 1 }
+        before { order.create_signifyd_order_score!(score: signifyd_score_threshold + 1) }
         it { should be false }
       end
 
       context "less than threshold" do
-        before { order.signifyd_score = signifyd_score_threshold - 1 }
+        before { order.create_signifyd_order_score!(score: signifyd_score_threshold - 1) }
         it { should be true }
       end
     end
@@ -112,6 +111,49 @@ describe Spree::Order, :type => :model do
     it "calls #create_signifyd_case" do
       order.should_receive(:create_signifyd_case)
       order.complete!
+    end
+  end
+
+  describe "#signifyd_score" do
+    subject { order.signifyd_score }
+    before { order.update_column(:signifyd_score, 500) }
+
+    context "no signifyd_order_score" do
+      it { should eq 500 }
+    end
+
+    context "signifyd_order_score is present" do
+      before { order.create_signifyd_order_score!(score: 700) }
+      it { should eq 700 }
+    end
+  end
+
+  describe "#set_signifyd_score" do
+    def set_score
+      order.set_signifyd_score(500)
+    end
+
+    describe 'spree_orders.signifyd_score column' do
+      subject { order.read_attribute(:signifyd_score) }
+      before { set_score }
+      it { should eq 500 }
+    end
+
+    describe 'order.signifyd_order_score' do
+      subject { order.signifyd_order_score.score }
+
+      context 'no score exists' do
+        before { set_score }
+        it { should eq 500 }
+      end
+
+      context 'a score already exists' do
+        before do
+          order.create_signifyd_order_score!(score: 100)
+          set_score
+        end
+        it { should eq 500 }
+      end
     end
   end
 end
