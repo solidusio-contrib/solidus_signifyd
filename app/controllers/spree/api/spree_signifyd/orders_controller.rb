@@ -7,7 +7,7 @@ module Spree::Api::SpreeSignifyd
     before_filter :authorize, :load_order, :order_canceled_or_shipped
 
     def update
-      @order.update_attributes!(signifyd_score: body['adjustedScore'])
+      @order.set_signifyd_score(body['adjustedScore'])
 
       if is_fraudulent?
         @order.cancel!

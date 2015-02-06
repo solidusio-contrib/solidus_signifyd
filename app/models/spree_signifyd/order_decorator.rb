@@ -4,6 +4,7 @@ module SpreeSignifyd::OrderDecorator
   included do
     Spree::Order.state_machine.after_transition to: :complete, do: :create_signifyd_case
     scope :complete_and_approved, -> { complete.where.not(approved_at: nil) }
+    has_one :signifyd_order_score, class_name: "SpreeSignifyd::OrderScore"
 
     prepend(InstanceMethods)
   end
@@ -32,6 +33,23 @@ module SpreeSignifyd::OrderDecorator
 
     def latest_payment
       payments.order("created_at DESC").first
+    end
+
+    def signifyd_score
+      signifyd_order_score.try(:score) || attributes['signifyd_score']
+    end
+
+    def set_signifyd_score(score)
+      if signifyd_order_score
+        signifyd_order_score.update!(score: score)
+      else
+        create_signifyd_order_score!(score: score)
+      end
+      update_columns(signifyd_score: score)
+    end
+
+    def signifyd_score=(score)
+      raise "Scores should be set through signifyd_order_score"
     end
 
     private
