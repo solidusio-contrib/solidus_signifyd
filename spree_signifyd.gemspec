@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'active_model_serializers', '0.9.0.alpha1'
   s.add_dependency 'resque', '~> 1.25.1'
-  s.add_dependency 'signifyd'
+  s.add_dependency 'signifyd', '~> 0.1.5'
   s.add_dependency 'spree_core', '2.2.2'
 
   s.add_development_dependency 'capybara', '~> 2.1'
