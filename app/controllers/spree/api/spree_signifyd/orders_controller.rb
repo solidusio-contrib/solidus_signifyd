@@ -7,12 +7,12 @@ module Spree::Api::SpreeSignifyd
     before_filter :authorize, :load_order, :order_canceled_or_shipped
 
     def update
-      @order.set_signifyd_score(body['adjustedScore'])
+      SpreeSignifyd.set_score(order: @order, score: body['adjustedScore'])
 
       if is_fraudulent?
         @order.cancel!
       elsif should_approve?
-        @order.signifyd_approve
+        SpreeSignifyd.approve(order: @order)
       end
 
       render nothing: true, status: 200
@@ -25,7 +25,7 @@ module Spree::Api::SpreeSignifyd
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
 
       if request_sha != computed_sha
-        render(nothing: true, status: 401) and return false
+        head 401
       end
     end
 
@@ -33,13 +33,13 @@ module Spree::Api::SpreeSignifyd
       @order = Spree::Order.find_by(number: body['orderId'])
 
       if !@order
-        render(nothing: true, status: 404) and return false
+        head 404
       end
     end
 
     def order_canceled_or_shipped
       if @order.shipped? || @order.canceled?
-        render nothing: true, status: 200 and return false
+        head 200
       end
     end
 

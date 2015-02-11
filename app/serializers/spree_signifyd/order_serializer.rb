@@ -53,7 +53,7 @@ module SpreeSignifyd
     end
 
     def latest_payment
-      @latest_payment ||= object.latest_payment
+      object.payments.order(:created_at, :id).last
     end
   end
 end

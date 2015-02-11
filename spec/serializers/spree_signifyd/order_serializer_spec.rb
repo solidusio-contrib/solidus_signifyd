@@ -18,8 +18,8 @@ module SpreeSignifyd
         it { purchase['totalPrice'].should eq order.total.to_s }
 
         context "with a payment" do
-          it { purchase['avsResponseCode'].should eq order.latest_payment.avs_response }
-          it { purchase['cvvResponseCode'].should eq order.latest_payment.cvv_response_code }
+          it { purchase['avsResponseCode'].should eq order.payments.last.avs_response }
+          it { purchase['cvvResponseCode'].should eq order.payments.last.cvv_response_code }
         end
 
         context "without a payment" do
