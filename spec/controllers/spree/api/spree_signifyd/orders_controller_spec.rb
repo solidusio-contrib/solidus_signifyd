@@ -40,17 +40,17 @@ module Spree::Api::SpreeSignifyd
 
       before { request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256'] = signifyd_sha }
 
-      before(:all) do
-        @api_key = SpreeSignifyd::Config[:api_key]
-        @default_approver_email = SpreeSignifyd::Config[:default_approver_email]
+      around do |example|
+        previous_api_key = SpreeSignifyd::Config[:api_key]
+        previous_email = SpreeSignifyd::Config[:default_approver_email]
 
         SpreeSignifyd::Config[:api_key] = 'ABCDE'
         SpreeSignifyd::Config[:default_approver_email] = user.email
-      end
 
-      after(:all) do
-        SpreeSignifyd::Config[:api_key] = @api_key
-        SpreeSignifyd::Config[:default_approver_email] = @default_approver_email
+        example.run
+
+        SpreeSignifyd::Config[:api_key] = previous_api_key
+        SpreeSignifyd::Config[:default_approver_email] = previous_email
       end
 
       subject { post :update, body.to_json, { use_route: :spree } }
@@ -61,7 +61,7 @@ module Spree::Api::SpreeSignifyd
         it "does not set signifyd_score" do
           subject
           order.reload
-          expect(order.signifyd_score).to eq nil
+          expect(order.signifyd_order_score).to eq nil
         end
 
         it "responds with 401" do
@@ -84,8 +84,8 @@ module Spree::Api::SpreeSignifyd
 
           it "returns without trying to act on the order" do
             Spree::Order.any_instance.stub(:shipped?).and_return(true)
-            expect { Spree::Order.any_instance }.not_to receive(:signifyd_approve)
-            expect { Spree::Order.any_instance }.not_to receive(:cancel!)
+            expect(SpreeSignifyd).not_to receive(:approve)
+            expect(Spree::Order.any_instance).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response).to be_success
           end
@@ -95,8 +95,8 @@ module Spree::Api::SpreeSignifyd
           before(:each) { order.cancel! }
 
           it "returns without trying to act on the order" do
-            expect { Spree::Order.any_instance }.not_to receive(:signifyd_approve)
-            expect { Spree::Order.any_instance }.not_to receive(:cancel!)
+            expect(SpreeSignifyd).not_to receive(:approve)
+            expect(Spree::Order.any_instance).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response).to be_success
           end
@@ -106,7 +106,7 @@ module Spree::Api::SpreeSignifyd
           it "sets the order's signifyd_score" do
             subject
             order.reload
-            expect(order.signifyd_score).to eq 262
+            expect(order.signifyd_order_score.score).to eq 262
           end
 
           it "responds with 200" do
@@ -135,8 +135,8 @@ module Spree::Api::SpreeSignifyd
 
               before(:each) { order.update_attribute(:approved_at, Time.now) }
 
-              it "does not call signifyd_approve" do
-                Spree::Order.any_instance.should_not_receive(:signifyd_approve)
+              it "does not call approve" do
+                expect(SpreeSignifyd).not_to receive(:approve)
                 subject
               end
             end
@@ -146,24 +146,21 @@ module Spree::Api::SpreeSignifyd
                 let(:signifyd_sha) { "wZIjgRQoDMWe0W4VoE5TJEoHf8ZcY9UeXY1lnGP+pfg=" }
 
                 before(:each) do
-                  Spree::Order.stub(:find_by).and_return(order) # Stub so rspec recognizes signifyd_approve
                   @original_review_disposition = body['reviewDisposition']
                   body['reviewDisposition'] = 'GOOD'
                 end
 
                 after(:each) { body['reviewDisposition'] = @original_review_disposition }
 
-                it "calls signifyd_approve" do
-                  order.should_receive(:signifyd_approve)
+                it "calls approve" do
+                  expect(SpreeSignifyd).to receive(:approve).with(order: order)
                   subject
                 end
               end
 
               context "the reviewDisposition is not GOOD" do
-                before(:each) { Spree::Order.stub(:find_by).and_return(order) }
-
-                it "does not call signifyd_approve" do
-                  order.should_not_receive(:signifyd_approve)
+                it "does not call approve" do
+                  expect(SpreeSignifyd).not_to receive(:approve)
                   subject
                 end
               end
@@ -174,13 +171,12 @@ module Spree::Api::SpreeSignifyd
                 before(:each) do
                   @original_score = body['adjustedScore']
                   body['adjustedScore'] = SpreeSignifyd::Config[:signifyd_score_threshold] + 1
-                  Spree::Order.stub(:find_by).and_return(order)
                 end
 
                 after(:each) { body['adjustedScore'] = @original_score }
 
                 it "approves the order" do
-                  order.should_receive(:signifyd_approve)
+                  expect(SpreeSignifyd).to receive(:approve).with(order: order)
                   subject
                 end
               end
@@ -192,13 +188,12 @@ module Spree::Api::SpreeSignifyd
                 before(:each) do
                   @original_score = body['adjustedScore']
                   body['adjustedScore'] = SpreeSignifyd::Config[:signifyd_score_threshold] - 1
-                  Spree::Order.stub(:find_by).and_return(order)
                 end
 
                 after(:each) { body['adjustedScore'] = @original_score }
 
                 it "does not approve the order" do
-                  order.should_not_receive(:signifyd_approve)
+                  expect(SpreeSignifyd).not_to receive(:approve)
                   subject
                 end
               end

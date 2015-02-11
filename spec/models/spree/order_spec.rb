@@ -25,12 +25,12 @@ describe Spree::Order, :type => :model do
 
       context "greater than threshold" do
         before { order.create_signifyd_order_score!(score: signifyd_score_threshold + 1) }
-        it { should be false }
+        it { should be_falsey }
       end
 
       context "less than threshold" do
         before { order.create_signifyd_order_score!(score: signifyd_score_threshold - 1) }
-        it { should be true }
+        it { should be_truthy }
       end
     end
   end
@@ -67,93 +67,14 @@ describe Spree::Order, :type => :model do
     end
   end
 
-  describe "#signifyd_approve" do
-
-    subject { order.signifyd_approve }
-
-    context "no default_approver" do
-      it 'raises an error' do
-        expect { subject }.to raise_error
-      end
-    end
-
-    context "default_approver exists" do
-      let(:user) { create(:user) }
-
-      before(:each) do
-        @default_approver_email = SpreeSignifyd::Config[:default_approver_email]
-        SpreeSignifyd::Config[:default_approver_email] = user.email
-      end
-
-      after(:each) { @default_approver_email = SpreeSignifyd::Config[:default_approver_email] }
-
-      it "calls approved_by with the default approver user" do
-        order.should_receive(:approved_by).with(user)
-        subject
-      end
-    end
-  end
-
-  describe "#lastest_payment" do
-    let(:order) { create(:order) }
-    let!(:old_payment) { create(:payment, order: order, created_at: 30.days.ago)}
-    let!(:new_payment) { create(:payment, order: order) }
-
-    it "finds the latest payment" do
-      expect(order.latest_payment).to eq new_payment
-    end
-  end
-
   describe "transition to complete" do
     let(:order) { create(:order_with_line_items, state: 'confirm') }
     let!(:payment) { create(:payment, amount: order.total, order: order ) }
 
     it "calls #create_signifyd_case" do
-      order.should_receive(:create_signifyd_case)
+      expect(SpreeSignifyd).to receive(:create_case).with(order_id: order.id)
       order.complete!
     end
   end
 
-  describe "#signifyd_score" do
-    subject { order.signifyd_score }
-    before { order.update_column(:signifyd_score, 500) }
-
-    context "no signifyd_order_score" do
-      it { should eq 500 }
-    end
-
-    context "signifyd_order_score is present" do
-      before { order.create_signifyd_order_score!(score: 700) }
-      it { should eq 700 }
-    end
-  end
-
-  describe "#set_signifyd_score" do
-    def set_score
-      order.set_signifyd_score(500)
-    end
-
-    describe 'spree_orders.signifyd_score column' do
-      subject { order.read_attribute(:signifyd_score) }
-      before { set_score }
-      it { should eq 500 }
-    end
-
-    describe 'order.signifyd_order_score' do
-      subject { order.signifyd_order_score.score }
-
-      context 'no score exists' do
-        before { set_score }
-        it { should eq 500 }
-      end
-
-      context 'a score already exists' do
-        before do
-          order.create_signifyd_order_score!(score: 100)
-          set_score
-        end
-        it { should eq 500 }
-      end
-    end
-  end
 end
