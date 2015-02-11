@@ -9,18 +9,9 @@ module SpreeSignifyd::OrderDecorator
     has_one :signifyd_order_score, class_name: "SpreeSignifyd::OrderScore"
 
     prepend(InstanceMethods)
-    singleton_class.prepend(PrependedClassMethods)
-  end
-
-  module PrependedClassMethods
-    # temporary code. remove after the column is dropped from the db.
-    def columns
-      super.reject { |column| column.name == 'signifyd_score' }
-    end
   end
 
   module InstanceMethods
-
     def is_risky?
       if signifyd_order_score
         signifyd_order_score.score <= SpreeSignifyd::Config[:signifyd_score_threshold]
