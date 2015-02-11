@@ -29,7 +29,7 @@ module SpreeSignifyd
 
     describe ".approve" do
 
-      let(:order) { FactoryGirl.create(:order) }
+      let(:order) { FactoryGirl.create(:order_ready_to_ship, line_items_count: 1) }
 
       def approve
         SpreeSignifyd.approve(order: order)
@@ -59,7 +59,23 @@ module SpreeSignifyd
           expect(order).to receive(:approved_by).with(user)
           approve
         end
+
+        context "updates the order" do
+          it { expect { approve }.to change { order.approver_id }.to user.id }
+          it { expect { approve }.to change { order.considered_risky }.to false }
+          it { expect { approve }.to change { order.shipment_state }.to 'ready' }
+          it do
+            expect(order.approved_at).to eq nil
+            expect { approve }.to change { order.approved_at }
+          end
+        end
+
+        it 'updates all of the shipments' do
+          order.shipments.each { |shipment| shipment.should_receive(:update!) }
+          approve
+        end
       end
+
     end
 
     describe ".create_case" do

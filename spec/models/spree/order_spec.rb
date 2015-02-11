@@ -35,38 +35,6 @@ describe Spree::Order, :type => :model do
     end
   end
 
-  describe "#approved_by" do
-    let(:user) { build(:user) }
-
-    subject { order }
-
-    context "updates the order" do
-
-      before { subject.approved_by(user) }
-
-      it 'sets approver_id' do
-        expect(subject.approver_id).to eq user.id
-      end
-
-      it 'sets approved_at' do
-        expect(subject.approved_at).to be_present
-      end
-
-      it 'is no longer risky' do
-        expect(subject.considered_risky).to eq false
-      end
-
-      it 'updates the shipment state' do
-        expect(subject.shipment_state).to eq 'ready'
-      end
-    end
-
-    it 'updates all of the shipments' do
-      subject.shipments.each { |shipment| shipment.should_receive(:update!) }
-      subject.approved_by(user)
-    end
-  end
-
   describe "transition to complete" do
     let(:order) { create(:order_with_line_items, state: 'confirm') }
     let!(:payment) { create(:payment, amount: order.total, order: order ) }

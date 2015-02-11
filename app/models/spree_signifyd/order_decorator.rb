@@ -30,15 +30,6 @@ module SpreeSignifyd::OrderDecorator
         true
       end
     end
-
-    def approved_by(user)
-      super
-
-      shipments.each { |shipment| shipment.update!(self) }
-      updater.update_shipment_state
-      save
-    end
-
   end
 end
 
