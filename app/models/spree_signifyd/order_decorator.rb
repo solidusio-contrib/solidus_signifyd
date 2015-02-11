@@ -8,8 +8,6 @@ module SpreeSignifyd::OrderDecorator
 
     has_one :signifyd_order_score, class_name: "SpreeSignifyd::OrderScore"
 
-    scope :complete_and_approved, -> { complete.where.not(approved_at: nil) }
-
     prepend(InstanceMethods)
     singleton_class.prepend(PrependedClassMethods)
   end
