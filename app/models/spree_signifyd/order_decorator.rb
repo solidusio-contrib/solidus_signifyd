@@ -2,7 +2,7 @@ module SpreeSignifyd::OrderDecorator
   extend ActiveSupport::Concern
 
   included do
-    Spree::Order.state_machine.after_transition to: :complete do |order, transition|
+    Spree::Order.state_machine.after_transition to: :complete, unless: :approved? do |order, transition|
       SpreeSignifyd.create_case(order_id: order.id)
     end
 

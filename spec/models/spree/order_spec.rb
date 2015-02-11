@@ -75,6 +75,14 @@ describe Spree::Order, :type => :model do
       expect(SpreeSignifyd).to receive(:create_case).with(order_id: order.id)
       order.complete!
     end
+
+    context "the order is already approved" do # e.g. unreturned exchanges are automatically approved
+      it "does not create a case" do
+        order.approved_by(Spree.user_class.first)
+        expect(SpreeSignifyd).not_to receive(:create_case)
+        order.complete!
+      end
+    end
   end
 
 end
