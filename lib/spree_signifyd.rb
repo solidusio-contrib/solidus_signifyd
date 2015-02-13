@@ -6,7 +6,6 @@ require 'spree_signifyd/request_verifier'
 require 'resque'
 
 module SpreeSignifyd
-  class DefaultApproverNotFound < StandardError; end
 
   module_function
 
@@ -19,14 +18,10 @@ module SpreeSignifyd
   end
 
   def approve(order:)
-    if default_approver = Spree::User.find_by(email: SpreeSignifyd::Config[:default_approver_email])
-      order.approved_by(default_approver)
-      order.shipments.each { |shipment| shipment.update!(order) }
-      order.updater.update_shipment_state
-      order.save!
-    else
-      raise DefaultApproverNotFound, "Cannot approve order. email=#{SpreeSignifyd::Config[:default_approver_email].inspect}"
-    end
+    order.approved_by(name: self.name)
+    order.shipments.each { |shipment| shipment.update!(order) }
+    order.updater.update_shipment_state
+    order.save!
   end
 
   def create_case(order_id:)

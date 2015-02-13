@@ -35,47 +35,20 @@ module SpreeSignifyd
         SpreeSignifyd.approve(order: order)
       end
 
-      context "no default_approver" do
-        it 'raises an error' do
-          expect {
-            approve
-          }.to raise_error(SpreeSignifyd::DefaultApproverNotFound)
+      context "updates the order" do
+        it { expect { approve }.to change { order.approver_name }.to "SpreeSignifyd" }
+        it { expect { approve }.to change { order.considered_risky }.to false }
+        it { expect { approve }.to change { order.shipment_state }.to 'ready' }
+        it do
+          expect(order.approved_at).to eq nil
+          expect { approve }.to change { order.approved_at }
         end
       end
 
-      context "default_approver exists" do
-        let(:user) { create(:user) }
-
-        around do |example|
-          previous = SpreeSignifyd::Config[:default_approver_email]
-          SpreeSignifyd::Config[:default_approver_email] = user.email
-
-          example.run
-
-          SpreeSignifyd::Config[:default_approver_email] = previous
-        end
-
-        it "calls approved_by with the default approver user" do
-          expect(order).to receive(:approved_by).with(user)
-          approve
-        end
-
-        context "updates the order" do
-          it { expect { approve }.to change { order.approver_id }.to user.id }
-          it { expect { approve }.to change { order.considered_risky }.to false }
-          it { expect { approve }.to change { order.shipment_state }.to 'ready' }
-          it do
-            expect(order.approved_at).to eq nil
-            expect { approve }.to change { order.approved_at }
-          end
-        end
-
-        it 'updates all of the shipments' do
-          order.shipments.each { |shipment| shipment.should_receive(:update!) }
-          approve
-        end
+      it 'updates all of the shipments' do
+        order.shipments.each { |shipment| shipment.should_receive(:update!) }
+        approve
       end
-
     end
 
     describe ".create_case" do

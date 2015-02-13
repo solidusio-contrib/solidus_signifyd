@@ -42,15 +42,9 @@ module Spree::Api::SpreeSignifyd
 
       around do |example|
         previous_api_key = SpreeSignifyd::Config[:api_key]
-        previous_email = SpreeSignifyd::Config[:default_approver_email]
-
         SpreeSignifyd::Config[:api_key] = 'ABCDE'
-        SpreeSignifyd::Config[:default_approver_email] = user.email
-
         example.run
-
         SpreeSignifyd::Config[:api_key] = previous_api_key
-        SpreeSignifyd::Config[:default_approver_email] = previous_email
       end
 
       subject { post :update, body.to_json, { use_route: :spree } }
