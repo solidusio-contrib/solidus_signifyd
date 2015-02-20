@@ -18,7 +18,7 @@ module SpreeSignifyd
   end
 
   def approve(order:)
-    order.approved_by(name: self.name)
+    order.contents.approve(name: self.name)
     order.shipments.each { |shipment| shipment.update!(order) }
     order.updater.update_shipment_state
     order.save!
