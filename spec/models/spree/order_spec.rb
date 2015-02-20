@@ -4,15 +4,6 @@ describe Spree::Order, :type => :model do
 
   let!(:order) { create(:order_ready_to_ship, line_items_count: 1) }
 
-  describe "#complete_and_approved" do
-    let!(:incomplete_order) { create(:order) }
-    let!(:approved_order) { create(:order_ready_to_ship, line_items_count: 1, approved_at: Time.now) }
-
-    it "only returns orders that are complete and approved" do
-      expect(Spree::Order.complete_and_approved).to eq [approved_order]
-    end
-  end
-
   describe "#is_risky?" do
     subject { order.is_risky? }
 
