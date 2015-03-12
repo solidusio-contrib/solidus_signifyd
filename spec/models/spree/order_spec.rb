@@ -8,7 +8,7 @@ describe Spree::Order, :type => :model do
     subject { order.is_risky? }
 
     context "no signifyd_score" do
-      it { should be true }
+      it { should be false }
     end
 
     context "signifyd_score present" do

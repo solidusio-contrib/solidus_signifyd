@@ -7,7 +7,7 @@ module Spree::Api::SpreeSignifyd
     before_filter :authorize, :load_order, :order_canceled_or_shipped
 
     def update
-      SpreeSignifyd.set_score(order: @order, score: body['adjustedScore'])
+      SpreeSignifyd.set_score(order: @order, score: score)
 
       if is_fraudulent?
         @order.cancel!
@@ -52,7 +52,11 @@ module Spree::Api::SpreeSignifyd
     end
 
     def should_approve?
-      !@order.approved? && (body['reviewDisposition'] == 'GOOD' || !@order.is_risky?)
+      body['reviewDisposition'] == 'GOOD' || SpreeSignifyd.score_above_threshold?(score)
+    end
+
+    def score
+      body['adjustedScore']
     end
   end
 end

@@ -28,4 +28,8 @@ module SpreeSignifyd
     Resque.enqueue(SpreeSignifyd::CreateSignifydCase, order_id)
   end
 
+  def score_above_threshold?(score)
+    score > SpreeSignifyd::Config[:signifyd_score_threshold]
+  end
+
 end

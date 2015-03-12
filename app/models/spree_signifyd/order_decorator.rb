@@ -13,11 +13,11 @@ module SpreeSignifyd::OrderDecorator
 
   module InstanceMethods
     def is_risky?
-      if signifyd_order_score
-        signifyd_order_score.score <= SpreeSignifyd::Config[:signifyd_score_threshold]
-      else
-        true
-      end
+      !(awaiting_approval? || SpreeSignifyd.score_above_threshold?(signifyd_order_score.score))
+    end
+
+    def awaiting_approval?
+      !signifyd_order_score
     end
   end
 end
