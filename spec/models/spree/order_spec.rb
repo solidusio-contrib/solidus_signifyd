@@ -8,20 +8,19 @@ describe Spree::Order, :type => :model do
     subject { order.is_risky? }
 
     context "no signifyd_score" do
-      it { should be false }
+      it { should eq false }
     end
 
     context "signifyd_score present" do
-      let(:signifyd_score_threshold) { SpreeSignifyd::Config[:signifyd_score_threshold] }
+      before { SpreeSignifyd.set_score(score: 500, order: order) }
 
-      context "greater than threshold" do
-        before { order.create_signifyd_order_score!(score: signifyd_score_threshold + 1) }
-        it { should be_falsey }
+      context "approved" do
+        before { SpreeSignifyd.approve(order: order) }
+        it { should eq false }
       end
 
-      context "less than threshold" do
-        before { order.create_signifyd_order_score!(score: signifyd_score_threshold - 1) }
-        it { should be_truthy }
+      context "not approved" do
+        it { should eq true }
       end
     end
   end

@@ -13,7 +13,7 @@ module SpreeSignifyd::OrderDecorator
 
   module InstanceMethods
     def is_risky?
-      !(awaiting_approval? || SpreeSignifyd.score_above_threshold?(signifyd_order_score.score))
+      !(awaiting_approval? || approved?)
     end
 
     def awaiting_approval?
