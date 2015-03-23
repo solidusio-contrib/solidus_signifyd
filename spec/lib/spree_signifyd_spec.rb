@@ -37,7 +37,6 @@ module SpreeSignifyd
 
       context "updates the order" do
         it { expect { approve }.to change { order.approver_name }.to "SpreeSignifyd" }
-        it { expect { approve }.to change { order.considered_risky }.to false }
         it { expect { approve }.to change { order.shipment_state }.to 'ready' }
         it do
           expect(order.approved_at).to eq nil
