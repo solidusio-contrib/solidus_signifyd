@@ -24,23 +24,15 @@ module Spree::Api::SpreeSignifyd
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
 
-      if request_sha != computed_sha
-        head 401
-      end
+      head 401 unless Devise.secure_compare(request_sha, computed_sha)
     end
 
     def load_order
-      @order = Spree::Order.find_by(number: body['orderId'])
-
-      if !@order
-        head 404
-      end
+      head 404 unless @order = Spree::Order.find_by(number: body['orderId'])
     end
 
     def order_canceled_or_shipped
-      if @order.shipped? || @order.canceled?
-        head 200
-      end
+      head 200 if @order.shipped? || @order.canceled?
     end
 
     def body
