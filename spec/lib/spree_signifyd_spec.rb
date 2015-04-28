@@ -31,6 +31,11 @@ module SpreeSignifyd
 
       let(:order) { FactoryGirl.create(:order_ready_to_ship, line_items_count: 1) }
 
+      before do
+        order.shipments.each { |shipment| shipment.update_attributes!(state: 'pending') }
+        order.updater.update_shipment_state
+      end
+
       def approve
         SpreeSignifyd.approve(order: order)
       end
@@ -44,8 +49,8 @@ module SpreeSignifyd
         end
       end
 
-      it 'updates all of the shipments' do
-        order.shipments.each { |shipment| shipment.should_receive(:update!) }
+      it 'readies all of the shipments' do
+        order.shipments.each { |shipment| shipment.should_receive(:ready!) }
         approve
       end
     end
