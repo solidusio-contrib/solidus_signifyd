@@ -4,6 +4,11 @@ describe Spree::Order, :type => :model do
 
   let!(:order) { create(:order_ready_to_ship, line_items_count: 1) }
 
+  before do
+    order.shipments.each { |shipment| shipment.update_attributes!(state: 'pending') }
+    order.updater.update_shipment_state
+  end
+
   describe "#is_risky?" do
     subject { order.is_risky? }
 
