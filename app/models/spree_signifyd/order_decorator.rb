@@ -3,7 +3,7 @@ module SpreeSignifyd::OrderDecorator
 
   included do
     Spree::Order.state_machine.after_transition to: :complete, unless: :approved? do |order, transition|
-      SpreeSignifyd.create_case(order_id: order.id)
+      SpreeSignifyd.create_case(order_number: order.number)
     end
 
     has_one :signifyd_order_score, class_name: "SpreeSignifyd::OrderScore"

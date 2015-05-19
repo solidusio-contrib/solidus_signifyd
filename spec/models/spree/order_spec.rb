@@ -35,7 +35,7 @@ describe Spree::Order, :type => :model do
     let!(:payment) { create(:payment, amount: order.total, order: order ) }
 
     it "calls #create_signifyd_case" do
-      expect(SpreeSignifyd).to receive(:create_case).with(order_id: order.id)
+      expect(SpreeSignifyd).to receive(:create_case).with(order_number: order.number)
       order.complete!
     end
 
