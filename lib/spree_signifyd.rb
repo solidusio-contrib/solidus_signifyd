@@ -25,8 +25,9 @@ module SpreeSignifyd
     order.save!
   end
 
-  def create_case(order_id:)
-    Resque.enqueue(SpreeSignifyd::CreateSignifydCase, order_id)
+  def create_case(order_number:)
+    Rails.logger.info "Queuing Signifyd case creation event: #{order_number}"
+    Resque.enqueue(SpreeSignifyd::CreateSignifydCase, order_number)
   end
 
   def score_above_threshold?(score)
