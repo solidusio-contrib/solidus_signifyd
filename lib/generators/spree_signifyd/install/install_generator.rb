@@ -1,8 +1,7 @@
 module SpreeSignifyd
   module Generators
     class InstallGenerator < Rails::Generators::Base
-
-      class_option :auto_run_migrations, :type => :boolean, :default => false
+      class_option :auto_run_migrations, type: :boolean, default: false
 
       source_root File.expand_path("../templates", __FILE__)
 
@@ -11,7 +10,7 @@ module SpreeSignifyd
       end
 
       def add_migrations
-        run 'bundle exec rake railties:install:migrations FROM=spree_signifyd'
+        run 'bundle exec rake railties:install:migrations FROM=solidus_signifyd'
       end
 
       def run_migrations
