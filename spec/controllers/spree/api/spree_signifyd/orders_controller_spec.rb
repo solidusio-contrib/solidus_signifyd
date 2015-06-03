@@ -47,7 +47,9 @@ module Spree::Api::SpreeSignifyd
         SpreeSignifyd::Config[:api_key] = previous_api_key
       end
 
-      subject { post :update, body.to_json, { use_route: :spree } }
+      routes { Spree::Core::Engine.routes }
+
+      subject { post :update, body.to_json }
 
       context "invalid sha" do
         let(:signifyd_sha) { "INVALID" }
@@ -81,7 +83,7 @@ module Spree::Api::SpreeSignifyd
             expect(SpreeSignifyd).not_to receive(:approve)
             expect(Spree::Order.any_instance).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
-            expect(response).to be_success
+            expect(response.status).to eq(200)
           end
         end
 
@@ -92,7 +94,7 @@ module Spree::Api::SpreeSignifyd
             expect(SpreeSignifyd).not_to receive(:approve)
             expect(Spree::Order.any_instance).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
-            expect(response).to be_success
+            expect(response.status).to eq(200)
           end
         end
 
