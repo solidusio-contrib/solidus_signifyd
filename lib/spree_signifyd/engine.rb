@@ -1,20 +1,20 @@
 module SpreeSignifyd
   class Engine < Rails::Engine
-    require 'spree/core'
+    require "spree/core"
     isolate_namespace Spree
-    engine_name 'spree_signifyd'
+    engine_name "solidus_signifyd"
 
     # use rspec for tests
     config.generators do |g|
       g.test_framework :rspec
     end
 
-    initializer "spree.signifyd.environment", :before => :load_config_initializers do |app|
+    initializer "spree.signifyd.environment", before: :load_config_initializers do |app|
       SpreeSignifyd::Config = Spree::SignifydConfiguration.new
     end
 
     def self.activate
-      Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
+      Dir.glob(File.join(File.dirname(__FILE__), "../../app/**/*_decorator*.rb")) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
