@@ -1,4 +1,4 @@
-module SpreeSignifyd::OrderDecorator
+module SpreeSignifyd::OrderConcerns
   extend ActiveSupport::Concern
 
   included do
@@ -21,5 +21,3 @@ module SpreeSignifyd::OrderDecorator
     end
   end
 end
-
-Spree::Order.include SpreeSignifyd::OrderDecorator
