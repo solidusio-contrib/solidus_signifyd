@@ -22,7 +22,7 @@ module Spree::Api::SpreeSignifyd
 
     def authorize
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
-      computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
+      computed_sha = build_sha(SpreeSignifyd::Config[:api_key], encode_request(request.raw_post))
 
       head 401 unless Devise.secure_compare(request_sha, computed_sha)
     end
