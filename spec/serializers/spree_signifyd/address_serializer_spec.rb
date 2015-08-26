@@ -2,8 +2,11 @@ require 'spec_helper'
 
 module SpreeSignifyd
   describe AddressSerializer do
-    let(:ship_address) { create(:address) }
     let(:serialized_address) { JSON.parse(AddressSerializer.new(ship_address).to_json) }
+
+    def ship_address(options = {})
+      @ship_address ||= create(:address, options)
+    end
 
     context "node values" do
       let(:address) { serialized_address['address'] }
@@ -25,8 +28,8 @@ module SpreeSignifyd
           expect(address['provinceCode']).to eq ship_address.state.abbr
         end
         it "with a state_name and no state entity" do
-          ship_address.update_attributes!(state_name: ship_address.state.name, state_id: nil)
-          expect(address['provinceCode']).to eq ship_address.state_name
+          ship_address(state_name: 'AL', state_id: nil)
+          expect(address['provinceCode']).to eq 'AL'
         end
       end
 

@@ -4,6 +4,8 @@ Solidus Signifyd
 Integration with Signifyd that implements a fraud check prior to marking a
 shipment as ready to be shipped.
 
+[![Circle CI](https://circleci.com/gh/solidusio/solidus_signifyd.svg?style=shield)](https://circleci.com/gh/solidusio/solidus_signifyd/tree/master)
+
 Installation
 ------------
 
