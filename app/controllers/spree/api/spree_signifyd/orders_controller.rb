@@ -24,7 +24,11 @@ module Spree::Api::SpreeSignifyd
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], encode_request(request.raw_post))
 
-      head 401 unless Devise.secure_compare(request_sha, computed_sha)
+      if !Devise.secure_compare(request_sha, computed_sha)
+        logger.error("computed digest does not match provided digest. computed=#{computed_sha.inspect} provided=#{request_sha.inspect}")
+        logger.info("raw_post bytes: #{request.raw_post.bytes}")
+        head 401
+      end
     end
 
     def load_order
