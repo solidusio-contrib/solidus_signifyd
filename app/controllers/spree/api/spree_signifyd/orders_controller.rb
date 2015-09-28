@@ -26,6 +26,7 @@ module Spree::Api::SpreeSignifyd
 
       if !Devise.secure_compare(request_sha, computed_sha)
         logger.error("computed digest does not match provided digest. computed=#{computed_sha.inspect} provided=#{request_sha.inspect}")
+        logger.info("content-type header: #{request.headers["Content-Type"].inspect}")
         logger.info("raw_post bytes: #{request.raw_post.bytes}")
         head 401
       end
