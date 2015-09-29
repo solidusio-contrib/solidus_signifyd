@@ -22,7 +22,7 @@ module Spree::Api::SpreeSignifyd
 
     def authorize
       request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
-      computed_sha = build_sha(SpreeSignifyd::Config[:api_key], encode_request(request.raw_post))
+      computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
 
       if !Devise.secure_compare(request_sha, computed_sha)
         logger.error("computed digest does not match provided digest. computed=#{computed_sha.inspect} provided=#{request_sha.inspect}")
