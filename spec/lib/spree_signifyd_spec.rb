@@ -53,6 +53,14 @@ module SpreeSignifyd
         order.shipments.each { |shipment| shipment.should_receive(:ready!) }
         approve
       end
+
+      describe "when order has shipments that are not pending" do
+        it "progresses the pending one(s) and ignores the rest" do
+          shipped_shipment = order.shipments.create(state: :shipped)
+          expect(shipped_shipment).to receive(:ready).never
+          expect { approve }.to change { order.approved_at }
+        end
+      end
     end
 
     describe ".create_case" do
