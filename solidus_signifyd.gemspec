@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency "active_model_serializers", "0.9.3"
   s.add_dependency "resque", "~> 1.25.1"
   s.add_dependency "signifyd", "~> 0.1.5"
-  s.add_dependency "solidus", [">= 1.0.0", "< 1.2.0"]
+  s.add_dependency "solidus", "~> 1.0"
   s.add_dependency "devise"
 
   s.add_development_dependency "rspec-rails",  "~> 2.13"
