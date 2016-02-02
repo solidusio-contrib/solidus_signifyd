@@ -8,16 +8,11 @@ module SpreeSignifyd
     has_one :user, serializer: SpreeSignifyd::UserSerializer, root: "userAccount"
 
     def purchase
-      {
-        'browserIpAddress' => object.last_ip_address,
-        'orderId' => object.number,
-        'createdAt' => object.completed_at.utc.iso8601,
-        'currency' => object.currency,
-        'totalPrice' => object.total,
-        'products' => products,
-        'avsResponseCode' => latest_payment.try(:avs_response),
-        'cvvResponseCode' => latest_payment.try(:cvv_response_code)
-      }
+      build_purchase_information.tap do |purchase_info|
+        if paid_by_paypal?
+          purchase_info["paymentGateway"] = "paypal_account"
+        end
+      end
     end
 
     def recipient
@@ -40,6 +35,23 @@ module SpreeSignifyd
     end
 
     private
+
+    def paid_by_paypal?
+      latest_payment.try!(:source) && latest_payment.source.cc_type == "paypal"
+    end
+
+    def build_purchase_information
+      {
+        'browserIpAddress' => object.last_ip_address,
+        'orderId' => object.number,
+        'createdAt' => object.completed_at.utc.iso8601,
+        'currency' => object.currency,
+        'totalPrice' => object.total,
+        'products' => products,
+        'avsResponseCode' => latest_payment.try!(:avs_response),
+        'cvvResponseCode' => latest_payment.try!(:cvv_response_code)
+      }
+    end
 
     def products
       order_products = []

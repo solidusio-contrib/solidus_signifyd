@@ -20,6 +20,24 @@ module SpreeSignifyd
         context "with a payment" do
           it { purchase['avsResponseCode'].should eq order.payments.last.avs_response }
           it { purchase['cvvResponseCode'].should eq order.payments.last.cvv_response_code }
+
+          context "when the payment is a paypal payment" do
+            before do
+              order.payments.first.source.update({
+                cc_type: "paypal"
+              })
+            end
+
+            it "includes a paymentGateway specification for signifyd" do
+              expect(purchase['paymentGateway']).to eql("paypal_account")
+            end
+          end
+
+          context "when the payment is not a paypal payment" do
+            it "does not include a paymentGateway key" do
+              expect(purchase['paymentGateway']).to eql(nil)
+            end
+          end
         end
 
         context "without a payment" do
