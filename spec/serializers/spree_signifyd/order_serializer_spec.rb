@@ -11,15 +11,15 @@ module SpreeSignifyd
 
         let(:purchase) { serialized_order['purchase'] }
 
-        it { purchase['browserIpAddress'].should eq order.last_ip_address }
-        it { purchase['orderId'].should eq order.number }
-        it { purchase['createdAt'].should eq order.completed_at.utc.iso8601 }
-        it { purchase['currency'].should eq order.currency }
-        it { purchase['totalPrice'].should eq order.total.to_s }
+        it { expect(purchase['browserIpAddress']).to eq order.last_ip_address }
+        it { expect(purchase['orderId']).to eq order.number }
+        it { expect(purchase['createdAt']).to eq order.completed_at.utc.iso8601 }
+        it { expect(purchase['currency']).to eq order.currency }
+        it { expect(purchase['totalPrice']).to eq order.total.to_s }
 
         context "with a payment" do
-          it { purchase['avsResponseCode'].should eq order.payments.last.avs_response }
-          it { purchase['cvvResponseCode'].should eq order.payments.last.cvv_response_code }
+          it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response }
+          it { expect(purchase['cvvResponseCode']).to eq order.payments.last.cvv_response_code }
 
           context "when the payment is a paypal payment" do
             before do
@@ -43,31 +43,31 @@ module SpreeSignifyd
         context "without a payment" do
           let(:order) { create(:completed_order_with_totals) }
 
-          it { purchase['avsResponseCode'].should be nil }
-          it { purchase['cvvResponseCode'].should be nil }
+          it { expect(purchase['avsResponseCode']).to be nil }
+          it { expect(purchase['cvvResponseCode']).to be nil }
         end
 
         it "contains a products node" do
-          purchase['products'].should eq [ JSON.parse(SpreeSignifyd::LineItemSerializer.new(line_item).to_json) ]
+          expect(purchase['products']).to eq [ JSON.parse(SpreeSignifyd::LineItemSerializer.new(line_item).to_json) ]
         end
       end
 
       context "userAccount" do
-        it { serialized_order.should include 'userAccount' }
+        it { expect(serialized_order).to include 'userAccount' }
       end
 
       context "recipient" do
-        it { serialized_order.should include 'recipient' }
-        it { serialized_order["recipient"]["confirmationEmail"].should eq order.email }
+        it { expect(serialized_order).to include 'recipient' }
+        it { expect(serialized_order["recipient"]["confirmationEmail"]).to eq order.email }
       end
 
       context "card" do
-        it { serialized_order.should include 'card' }
+        it { expect(serialized_order).to include 'card' }
 
         context "credit card payment" do
           let!(:payment) { create(:payment, order: order) }
 
-          it { serialized_order["card"].should include 'billingAddress'}
+          it { expect(serialized_order["card"]).to include 'billingAddress'}
         end
 
         context "no payment source" do
@@ -80,7 +80,7 @@ module SpreeSignifyd
 
         context "non credit card payment" do
           it "contains no data" do
-            Spree::CreditCard.any_instance.stub(:instance_of?).and_return(false)
+            allow_any_instance_of(Spree::CreditCard).to receive(:instance_of?).and_return(false)
             expect(serialized_order["card"]).to eq({})
           end
         end

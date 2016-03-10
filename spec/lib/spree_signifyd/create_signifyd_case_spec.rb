@@ -7,12 +7,12 @@ module SpreeSignifyd
       let(:json) { JSON.parse(OrderSerializer.new(order).to_json) }
 
       it "calls Signifyd::Case#create with the correct params" do
-        Signifyd::Case.should_receive(:create).with(json, SpreeSignifyd::Config[:api_key])
+        expect(Signifyd::Case).to receive(:create).with(json, SpreeSignifyd::Config[:api_key])
         CreateSignifydCase.perform(order.id)
       end
 
       it "calls Signifyd::Case#create with the correct params" do
-        Signifyd::Case.should_receive(:create).with(json, SpreeSignifyd::Config[:api_key])
+        expect(Signifyd::Case).to receive(:create).with(json, SpreeSignifyd::Config[:api_key])
         CreateSignifydCase.perform(order.number)
       end
     end

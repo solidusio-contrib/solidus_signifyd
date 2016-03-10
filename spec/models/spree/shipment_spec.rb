@@ -8,29 +8,29 @@ describe Spree::Shipment, :type => :model do
   describe "#determine_state_with_signifyd" do
 
     context "with a risky order" do
-      before { shipment.order.stub(:is_risky?).and_return(true) }
+      before { allow(shipment.order).to receive(:is_risky?).and_return(true) }
 
       context "the order is not approved" do
         it "returns pending" do
-          shipment.order.stub(:approved?).and_return(false)
-          subject.should eq "pending"
+          allow(shipment.order).to receive(:approved?).and_return(false)
+          expect(subject).to eq "pending"
         end
       end
 
       context "the order is approved" do
         it "defaults to existing behavior" do
-          shipment.order.stub(:approved?).and_return(true)
-          shipment.should_receive(:determine_state).with(shipment.order)
+          allow(shipment.order).to receive(:approved?).and_return(true)
+          expect(shipment).to receive(:determine_state).with(shipment.order)
           subject
         end
       end
     end
 
     context "without a risky order" do
-      before { shipment.order.stub(:is_risky?).and_return(false) }
+      before { allow(shipment.order).to receive(:is_risky?).and_return(false) }
 
       it "defaults to existing behavior" do
-        shipment.should_receive(:determine_state).with(shipment.order)
+        expect(shipment).to receive(:determine_state).with(shipment.order)
         subject
       end
     end
@@ -40,7 +40,7 @@ describe Spree::Shipment, :type => :model do
         context "the shipment is #{state}" do
           before { shipment.update_columns(state: state) }
           it "defaults to existing behavior" do
-            shipment.should_receive(:determine_state).with(shipment.order)
+            expect(shipment).to receive(:determine_state).with(shipment.order)
             subject
           end
         end
@@ -50,7 +50,7 @@ describe Spree::Shipment, :type => :model do
         context "the shipment is #{state}" do
           before { shipment.update_columns(state: state) }
           it "is pending" do
-            subject.should eq "pending"
+            expect(subject).to eq "pending"
           end
         end
       end

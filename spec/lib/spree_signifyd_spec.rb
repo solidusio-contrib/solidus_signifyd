@@ -50,7 +50,7 @@ module SpreeSignifyd
       end
 
       it 'readies all of the shipments' do
-        order.shipments.each { |shipment| shipment.should_receive(:ready!) }
+        order.shipments.each { |shipment| expect(shipment).to receive(:ready!) }
         approve
       end
 

@@ -6,7 +6,7 @@ module SpreeSignifyd
     let(:serialized_address) { JSON.parse(BillingAddressSerializer.new(bill_address).to_json) }
 
     context "node values" do
-      it { serialized_address.should include 'billingAddress' }
+      it { expect(serialized_address).to include 'billingAddress' }
     end
   end
 end

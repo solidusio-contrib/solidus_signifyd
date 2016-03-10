@@ -79,9 +79,9 @@ module Spree::Api::SpreeSignifyd
         context "the order has been shipped" do
 
           it "returns without trying to act on the order" do
-            Spree::Order.any_instance.stub(:shipped?).and_return(true)
+            allow_any_instance_of(Spree::Order).to receive(:shipped?).and_return(true)
             expect(SpreeSignifyd).not_to receive(:approve)
-            expect(Spree::Order.any_instance).not_to receive(:cancel!)
+            expect_any_instance_of(Spree::Order).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response.status).to eq(200)
           end
@@ -92,7 +92,7 @@ module Spree::Api::SpreeSignifyd
 
           it "returns without trying to act on the order" do
             expect(SpreeSignifyd).not_to receive(:approve)
-            expect(Spree::Order.any_instance).not_to receive(:cancel!)
+            expect_any_instance_of(Spree::Order).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response.status).to eq(200)
           end
@@ -121,7 +121,7 @@ module Spree::Api::SpreeSignifyd
             after(:each) { body['reviewDiposition'] = @original_review_disposition }
 
             it 'cancels the order' do
-              Spree::Order.any_instance.should_receive(:cancel!)
+              expect_any_instance_of(Spree::Order).to receive(:cancel!)
               subject
             end
           end
