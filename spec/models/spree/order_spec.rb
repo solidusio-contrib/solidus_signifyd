@@ -13,7 +13,7 @@ describe Spree::Order, :type => :model do
     subject { order.is_risky? }
 
     context "no signifyd_score" do
-      it { should eq false }
+      it { is_expected.to eq false }
     end
 
     context "signifyd_score present" do
@@ -21,11 +21,11 @@ describe Spree::Order, :type => :model do
 
       context "approved" do
         before { SpreeSignifyd.approve(order: order) }
-        it { should eq false }
+        it { is_expected.to eq false }
       end
 
       context "not approved" do
-        it { should eq true }
+        it { is_expected.to eq true }
       end
     end
   end
