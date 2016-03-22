@@ -9,6 +9,10 @@ module SpreeSignifyd
 
     let(:serialized_user) { JSON.parse(UserSerializer.new(user).to_json) }
 
+    before do
+      old_complete_order.update_attributes(completed_at: 30.days.ago)
+    end
+
     context "node values" do
       it "emailAddress" do
         expect(serialized_user['emailAddress']).to eq user.email
