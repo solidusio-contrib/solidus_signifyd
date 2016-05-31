@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = "solidus_signifyd"
-  s.version     = "1.0.1"
+  s.version     = "1.1.0"
   s.summary     = "Solidus extension for communicating with Signifyd to check orders for fraud."
   s.description = s.summary
 
