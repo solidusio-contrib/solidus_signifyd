@@ -8,12 +8,12 @@ module SpreeSignifyd
 
       it "calls Signifyd::Case#create with the correct params" do
         expect(Signifyd::Case).to receive(:create).with(json, SpreeSignifyd::Config[:api_key])
-        CreateSignifydCase.perform(order.id)
+        CreateSignifydCase.perform_now(order.id)
       end
 
       it "calls Signifyd::Case#create with the correct params" do
         expect(Signifyd::Case).to receive(:create).with(json, SpreeSignifyd::Config[:api_key])
-        CreateSignifydCase.perform(order.number)
+        CreateSignifydCase.perform_now(order.number)
       end
     end
   end

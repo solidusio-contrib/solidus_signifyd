@@ -65,8 +65,7 @@ module SpreeSignifyd
 
     describe ".create_case" do
       it 'enqueues in resque' do
-        expect(Resque).to receive(:enqueue).with(SpreeSignifyd::CreateSignifydCase, 111)
-        SpreeSignifyd.create_case(order_number: 111)
+        expect { SpreeSignifyd.create_case(order_number: 111) }.to have_enqueued_job(SpreeSignifyd::CreateSignifydCase)
       end
     end
 

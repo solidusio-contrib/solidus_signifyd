@@ -38,6 +38,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.use_transactional_fixtures = false
 
+  config.include RSpec::Rails::Matchers
   config.include FactoryGirl::Syntax::Methods
 
   # Ensure Suite is set to use transactions for speed.
@@ -50,6 +51,7 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+    ActiveJob::Base.queue_adapter = :test
 
     allow(Signifyd::Case).to receive(:create).and_return(
       { code: 201, body: { investigationId: 123 } }
