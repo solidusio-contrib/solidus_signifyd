@@ -21,7 +21,7 @@ module Spree::Api::SpreeSignifyd
     private
 
     def authorize
-      request_sha = request.headers['HTTP_HTTP_X_SIGNIFYD_HMAC_SHA256']
+      request_sha = request.headers['HTTP_X_SIGNIFYD_SEC_HMAC_SHA256']
       computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
 
       if !Devise.secure_compare(request_sha, computed_sha)
