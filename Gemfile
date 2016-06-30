@@ -7,6 +7,7 @@ gem 'pg'
 gem 'mysql2'
 
 group :development, :test do
+  gem 'json-schema'
   gem "pry-rails"
 end
 

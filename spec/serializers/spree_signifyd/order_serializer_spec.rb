@@ -9,6 +9,17 @@ module SpreeSignifyd
     let(:line_item) { order.line_items.first }
     let(:serialized_order) { JSON.parse(OrderSerializer.new(order).to_json) }
 
+    describe 'document format' do
+      before do
+        # we can't pass payments into the :shipped_order factory
+        order.payments.last.update(avs_response: "M", cvv_response_code: "M")
+      end
+
+      it 'matches the SIGNIFYD V2 api' do
+        expect(serialized_order).to match_schema('v2/case.json')
+      end
+    end
+
     describe "node values" do
       context "purchase" do
 
