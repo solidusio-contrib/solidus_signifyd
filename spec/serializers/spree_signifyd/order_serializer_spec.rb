@@ -21,8 +21,8 @@ module SpreeSignifyd
         it { expect(purchase['totalPrice']).to eq order.total.to_s }
 
         context "with a payment" do
-          it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response }
-          it { expect(purchase['cvvResponseCode']).to eq order.payments.last.cvv_response_code }
+          it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response.to_s }
+          it { expect(purchase['cvvResponseCode']).to eq order.payments.last.cvv_response_code.to_s }
 
           context "when the payment is a paypal payment" do
             before do
@@ -46,8 +46,8 @@ module SpreeSignifyd
         context "without a payment" do
           let(:order) { create(:completed_order_with_totals) }
 
-          it { expect(purchase['avsResponseCode']).to be nil }
-          it { expect(purchase['cvvResponseCode']).to be nil }
+          it { expect(purchase['avsResponseCode']).to eq "" }
+          it { expect(purchase['cvvResponseCode']).to eq "" }
         end
 
         it "contains a products node" do

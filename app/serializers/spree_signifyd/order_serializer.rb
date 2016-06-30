@@ -48,8 +48,8 @@ module SpreeSignifyd
         'currency' => object.currency,
         'totalPrice' => object.total,
         'products' => products,
-        'avsResponseCode' => latest_payment.try!(:avs_response),
-        'cvvResponseCode' => latest_payment.try!(:cvv_response_code)
+        'avsResponseCode' => latest_payment.try!(:avs_response) || "",
+        'cvvResponseCode' => latest_payment.try!(:cvv_response_code) || ""
       }
     end
 
