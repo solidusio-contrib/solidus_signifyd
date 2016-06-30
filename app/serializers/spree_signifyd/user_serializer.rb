@@ -41,6 +41,10 @@ module SpreeSignifyd
       completed_orders.sum(:total).to_f
     end
 
+    def phone
+      object.orders.order("created_at DESC").first.try!(:ship_address).try!(:phone)
+    end
+
     private
 
     def completed_orders
