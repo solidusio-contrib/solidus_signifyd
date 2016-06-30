@@ -2,7 +2,10 @@ require 'spec_helper'
 
 module SpreeSignifyd
   describe OrderSerializer do
-    let(:order) { create(:shipped_order, line_items_count: 1) }
+    let(:order) { create :shipped_order,
+      line_items_count: 1,
+      last_ip_address: "127.0.0.1"
+    }
     let(:line_item) { order.line_items.first }
     let(:serialized_order) { JSON.parse(OrderSerializer.new(order).to_json) }
 

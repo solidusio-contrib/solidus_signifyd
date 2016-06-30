@@ -42,7 +42,7 @@ module SpreeSignifyd
 
     def build_purchase_information
       {
-        'browserIpAddress' => object.last_ip_address,
+        'browserIpAddress' => object.last_ip_address || "",
         'orderId' => object.number,
         'createdAt' => object.completed_at.utc.iso8601,
         'currency' => object.currency,
