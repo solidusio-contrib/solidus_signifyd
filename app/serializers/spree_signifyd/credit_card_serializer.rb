@@ -9,8 +9,8 @@ module SpreeSignifyd
     # this is how to conditionally include attributes in AMS
     def attributes(*args)
       hash = super
-      hash[:expiryMonth] = object.month if object.month
-      hash[:expiryYear] = object.year if object.year
+      hash[:expiryMonth] = object.month.to_i if object.month
+      hash[:expiryYear] = object.year.to_i if object.year
       hash
     end
 

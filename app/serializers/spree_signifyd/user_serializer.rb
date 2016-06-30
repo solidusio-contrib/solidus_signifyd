@@ -31,7 +31,7 @@ module SpreeSignifyd
     end
 
     def aggregateOrderDollars
-      completed_orders.sum(:total)
+      completed_orders.sum(:total).to_f
     end
 
     private

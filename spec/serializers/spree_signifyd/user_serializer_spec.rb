@@ -50,7 +50,7 @@ module SpreeSignifyd
       end
 
       it "aggregateOrderDollars" do
-        expect(serialized_user['aggregateOrderDollars']).to eq (old_complete_order.total + new_complete_order.total).to_s
+        expect(serialized_user['aggregateOrderDollars']).to eq (old_complete_order.total + new_complete_order.total)
       end
     end
   end

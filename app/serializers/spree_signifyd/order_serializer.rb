@@ -46,7 +46,7 @@ module SpreeSignifyd
         'orderId' => object.number,
         'createdAt' => object.completed_at.utc.iso8601,
         'currency' => object.currency,
-        'totalPrice' => object.total,
+        'totalPrice' => object.total.to_f,
         'products' => products,
         'avsResponseCode' => latest_payment.try!(:avs_response) || "",
         'cvvResponseCode' => latest_payment.try!(:cvv_response_code) || ""

@@ -18,7 +18,7 @@ module SpreeSignifyd
         it { expect(purchase['orderId']).to eq order.number }
         it { expect(purchase['createdAt']).to eq order.completed_at.utc.iso8601 }
         it { expect(purchase['currency']).to eq order.currency }
-        it { expect(purchase['totalPrice']).to eq order.total.to_s }
+        it { expect(purchase['totalPrice']).to eq order.total }
 
         context "with a payment" do
           it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response.to_s }
