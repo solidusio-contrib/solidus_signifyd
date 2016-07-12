@@ -4,7 +4,14 @@ module SpreeSignifyd
   class UserSerializer < ActiveModel::Serializer
     self.root = false
 
-    attributes :emailAddress, :username, :createdDate, :lastUpdateDate, :lastOrderId, :aggregateOrderCount, :aggregateOrderDollars
+    attributes :emailAddress, :username, :createdDate, :lastUpdateDate, :aggregateOrderCount, :aggregateOrderDollars, :phone
+
+    # this is how to conditionally include attributes in AMS
+    def attributes(*args)
+      hash = super
+      hash[:lastOrderId] = lastOrderId if lastOrderId.present?
+      hash
+    end
 
     def emailAddress
       object.email
@@ -31,7 +38,11 @@ module SpreeSignifyd
     end
 
     def aggregateOrderDollars
-      completed_orders.sum(:total)
+      completed_orders.sum(:total).to_f
+    end
+
+    def phone
+      object.orders.order("created_at DESC").first.try!(:ship_address).try!(:phone)
     end
 
     private

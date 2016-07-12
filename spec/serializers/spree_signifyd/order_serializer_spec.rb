@@ -2,9 +2,23 @@ require 'spec_helper'
 
 module SpreeSignifyd
   describe OrderSerializer do
-    let(:order) { create(:shipped_order, line_items_count: 1) }
+    let(:order) { create :shipped_order,
+      line_items_count: 1,
+      last_ip_address: "127.0.0.1"
+    }
     let(:line_item) { order.line_items.first }
     let(:serialized_order) { JSON.parse(OrderSerializer.new(order).to_json) }
+
+    describe 'document format' do
+      before do
+        # we can't pass payments into the :shipped_order factory
+        order.payments.last.update(avs_response: "M", cvv_response_code: "M")
+      end
+
+      it 'matches the SIGNIFYD V2 api' do
+        expect(serialized_order).to match_schema('v2/case.json')
+      end
+    end
 
     describe "node values" do
       context "purchase" do
@@ -15,11 +29,11 @@ module SpreeSignifyd
         it { expect(purchase['orderId']).to eq order.number }
         it { expect(purchase['createdAt']).to eq order.completed_at.utc.iso8601 }
         it { expect(purchase['currency']).to eq order.currency }
-        it { expect(purchase['totalPrice']).to eq order.total.to_s }
+        it { expect(purchase['totalPrice']).to eq order.total }
 
         context "with a payment" do
-          it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response }
-          it { expect(purchase['cvvResponseCode']).to eq order.payments.last.cvv_response_code }
+          it { expect(purchase['avsResponseCode']).to eq order.payments.last.avs_response.to_s }
+          it { expect(purchase['cvvResponseCode']).to eq order.payments.last.cvv_response_code.to_s }
 
           context "when the payment is a paypal payment" do
             before do
@@ -43,8 +57,8 @@ module SpreeSignifyd
         context "without a payment" do
           let(:order) { create(:completed_order_with_totals) }
 
-          it { expect(purchase['avsResponseCode']).to be nil }
-          it { expect(purchase['cvvResponseCode']).to be nil }
+          it { expect(purchase['avsResponseCode']).to eq "" }
+          it { expect(purchase['cvvResponseCode']).to eq "" }
         end
 
         it "contains a products node" do

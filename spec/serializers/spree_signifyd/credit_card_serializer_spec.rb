@@ -15,11 +15,11 @@ module SpreeSignifyd
       end
 
       it "expiryMonth" do
-        expect(serialized_credit_card['expiryMonth']).to eq credit_card.month
+        expect(serialized_credit_card['expiryMonth']).to eq credit_card.month.to_i
       end
 
       it "expiryYear" do
-        expect(serialized_credit_card['expiryYear']).to eq credit_card.year
+        expect(serialized_credit_card['expiryYear']).to eq credit_card.year.to_i
       end
     end
   end
