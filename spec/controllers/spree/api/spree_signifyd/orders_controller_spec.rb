@@ -38,13 +38,9 @@ module Spree::Api::SpreeSignifyd
           }
       }
 
-      before { request.headers['HTTP_X_SIGNIFYD_SEC_HMAC_SHA256'] = signifyd_sha }
-
-      around do |example|
-        previous_api_key = SpreeSignifyd::Config[:api_key]
+      before do
+        request.headers['HTTP_X_SIGNIFYD_SEC_HMAC_SHA256'] = signifyd_sha
         SpreeSignifyd::Config[:api_key] = 'ABCDE'
-        example.run
-        SpreeSignifyd::Config[:api_key] = previous_api_key
       end
 
       routes { Spree::Core::Engine.routes }
