@@ -43,7 +43,34 @@ http://www.example.com/api/spree_signifyd/orders
 
 Cases can be inspected in the SIGNIFYD web console.
 
-### Risky Orders
+Configuration
+-------------
+
+### api_key
+
+Type: `string`
+
+SIGNIFYD team API key.
+
+### exclude_store_credit_orders
+
+Type: `boolean`
+Default: `false`
+
+By default, even orders which are fully paid with store credit are sent to
+SIGNIFYD. Since this could result in unnecessary charges to a user who is on a
+"flat rate" plan, we provide the option to skip these orders.
+
+### signifyd_score_threshold
+
+Type: `integer`
+Default: `500`
+
+Automatic approval is granted to orders which have a good "reviewDisposition" or
+have a score greater than the `signifyd_score_threshold`.
+
+Risky Orders
+------------
 
 Flagging a case as bad in the SIGNIFYD web console will associate
 a fraudulent case with the order's email. This will cause future orders to drop

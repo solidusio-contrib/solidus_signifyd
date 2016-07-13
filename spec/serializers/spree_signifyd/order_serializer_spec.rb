@@ -55,7 +55,10 @@ module SpreeSignifyd
         end
 
         context "paid with store credit" do
-          let(:order) { create :shipped_order, payment_type: :store_credit_payment}
+          before do
+            create(:store_credit_payment, amount: order.total, order: order)
+            order.payments.reload
+          end
 
           it { expect(serialized_order["card"]).to eq({}) }
         end
