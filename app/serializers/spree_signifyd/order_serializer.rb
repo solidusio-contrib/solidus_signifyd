@@ -37,7 +37,7 @@ module SpreeSignifyd
     private
 
     def paid_by_paypal?
-      latest_payment.try!(:source) && latest_payment.source.cc_type == "paypal"
+      latest_payment.try!(:source).try(:cc_type) == "paypal"
     end
 
     def build_purchase_information

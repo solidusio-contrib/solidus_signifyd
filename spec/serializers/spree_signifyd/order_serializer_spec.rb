@@ -54,6 +54,12 @@ module SpreeSignifyd
           end
         end
 
+        context "paid with store credit" do
+          let(:order) { create :shipped_order, payment_type: :store_credit_payment}
+
+          it { expect(serialized_order["card"]).to eq({}) }
+        end
+
         context "without a payment" do
           let(:order) { create(:completed_order_with_totals) }
 
