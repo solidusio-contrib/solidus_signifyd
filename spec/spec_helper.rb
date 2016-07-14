@@ -47,6 +47,11 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with :truncation
   end
 
+  # allow us to test various preference settings without cross contamination
+  config.before :each do
+    SpreeSignifyd::Config.reset
+  end
+
   # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
   config.before :each do
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction

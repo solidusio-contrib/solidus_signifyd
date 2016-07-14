@@ -11,6 +11,7 @@ module SpreeSignifyd
 
     initializer "spree.signifyd.environment", before: :load_config_initializers do |app|
       SpreeSignifyd::Config = Spree::SignifydConfiguration.new
+      SpreeSignifyd::Config.use_static_preferences!
     end
 
     def self.activate
