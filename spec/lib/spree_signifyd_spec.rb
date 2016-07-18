@@ -61,6 +61,18 @@ module SpreeSignifyd
           expect { approve }.to change { order.approved_at }
         end
       end
+
+      context "with backordered stock" do
+        before do
+          order.inventory_units.first.update(state: 'backordered')
+          order.reload
+        end
+
+        it "does not attempt invalid state changes" do
+          approve
+          expect(order.reload.shipments.first).to be_pending
+        end
+      end
     end
 
     describe ".create_case" do
