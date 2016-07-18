@@ -19,7 +19,7 @@ module SpreeSignifyd
 
   def approve(order:)
     order.contents.approve(name: self.name)
-    order.shipments.each { |shipment| shipment.ready! if shipment.pending? }
+    order.shipments.each { |shipment| shipment.ready! if shipment.can_ready? }
     order.updater.update_shipment_state
     order.save!
   end
