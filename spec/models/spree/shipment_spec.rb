@@ -7,9 +7,12 @@ describe Spree::Shipment, :type => :model do
 
   describe "#determine_state_with_signifyd" do
     context "with a canceled order" do
-      before { shipment.order.update_columns(state: 'canceled') }
+      before do
+        shipment.order.update(state: 'canceled')
+        shipment.update(state: 'canceled')
+      end
 
-      it "canceled shipments remain canceled", pending: true do
+      it "canceled shipments remain canceled" do
         expect(subject).to eq "canceled"
       end
     end
