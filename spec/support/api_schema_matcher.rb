@@ -1,3 +1,5 @@
+require "json-schema"
+
 RSpec::Matchers.define :match_schema do |schema|
   match do |candidate|
     schema_directory = File.expand_path("../schemas",  __FILE__)
