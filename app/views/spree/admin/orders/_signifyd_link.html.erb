@@ -1,0 +1,3 @@
+<% if @order.signifyd_order_score && @order.signifyd_order_score.case_id? %>
+  <%= link_to 'View Case on Signifyd', @order.signifyd_order_score.build_case_url, target: '_blank' %>
+<% end %>
