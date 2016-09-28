@@ -27,6 +27,33 @@ module SpreeSignifyd
 
     end
 
+    describe ".set_case_id" do
+
+      let(:order) { FactoryGirl.create(:order) }
+      let(:case_id) { 1}
+
+      subject { SpreeSignifyd.set_case_id(order: order, case_id: case_id) }
+
+      context 'when there is an existing SpreeSignifyd::OrderScore' do
+        before do
+          order.create_signifyd_order_score!(score: 100)
+        end
+
+        it 'updates the case_id' do
+          expect {
+            subject
+          }.to change { order.signifyd_order_score.case_id }.from(nil).to(1)
+        end
+      end
+
+      context 'when there is no existing SpreeSignifyd::OrderScore' do
+        it 'does not update the case_id' do
+          expect(order.signifyd_order_score).to eq nil
+          expect{ subject }.not_to raise_error
+        end
+      end
+    end
+
     describe ".approve" do
 
       let(:order) { FactoryGirl.create(:order_ready_to_ship, line_items_count: 1) }

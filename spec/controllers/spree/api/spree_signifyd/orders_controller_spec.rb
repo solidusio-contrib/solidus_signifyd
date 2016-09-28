@@ -101,6 +101,10 @@ module Spree::Api::SpreeSignifyd
             expect(order.signifyd_order_score.score).to eq 262
           end
 
+          it "sets the order's signifyd_case_id" do
+            expect{ subject }.to change{ order.reload.signifyd_order_score.try!(:case_id) }.from(nil).to(1)
+          end
+
           it "responds with 200" do
             subject
             expect(response.code.to_i).to eq 200
