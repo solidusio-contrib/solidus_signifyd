@@ -8,6 +8,7 @@ module Spree::Api::SpreeSignifyd
 
     def update
       SpreeSignifyd.set_score(order: @order, score: score)
+      SpreeSignifyd.set_case_id(order: @order, case_id: case_id)
 
       if is_fraudulent?
         @order.cancel!
@@ -54,6 +55,10 @@ module Spree::Api::SpreeSignifyd
 
     def score
       body['adjustedScore']
+    end
+
+    def case_id
+      body['caseId']
     end
   end
 end
