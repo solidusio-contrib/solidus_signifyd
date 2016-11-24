@@ -21,7 +21,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "active_model_serializers", "0.9.3"
   s.add_dependency "signifyd", "~> 0.1.5"
-  s.add_dependency "solidus", [">= 1.0", "< 3"]
+  s.add_dependency "solidus_core", [">= 1.0", "< 3"]
+  s.add_dependency "solidus_api", [">= 1.0", "< 3"]
+  s.add_dependency "solidus_backend", [">= 1.0", "< 3"]
   s.add_dependency "devise"
 
   s.add_development_dependency "rspec-rails",  "~> 3.4"
