@@ -7,7 +7,7 @@ Deface::Override.new(
 
 Deface::Override.new(
   virtual_path: "spree/admin/orders/_risk_analysis",
-  name: "admin_order_signifyd_risk_analysis",
+  name: "admin_order_signifyd_link",
   insert_bottom: "#risk_analysis",
   partial: "spree/admin/orders/signifyd_link",
 )
