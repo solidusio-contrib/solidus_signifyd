@@ -1,4 +1,4 @@
-class AddCaseIdToSpreeSignifydOrderScores < ActiveRecord::Migration
+class AddCaseIdToSpreeSignifydOrderScores < SolidusSupport::Migration[4.2]
   def up
     add_column :spree_signifyd_order_scores, :case_id, :integer
   end
