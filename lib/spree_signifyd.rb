@@ -1,4 +1,5 @@
-require 'spree_core'
+require 'solidus_core'
+require 'solidus_support'
 require 'signifyd'
 require 'spree_signifyd/create_signifyd_case'
 require 'spree_signifyd/engine'

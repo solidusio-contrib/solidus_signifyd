@@ -1,4 +1,4 @@
-class TransferSpreeOrdersSignifydScoreData < ActiveRecord::Migration
+class TransferSpreeOrdersSignifydScoreData < SolidusSupport::Migration[4.2]
   disable_ddl_transaction!
 
   def up

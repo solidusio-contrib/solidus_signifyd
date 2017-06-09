@@ -45,7 +45,7 @@ module Spree::Api::SpreeSignifyd
 
       routes { Spree::Core::Engine.routes }
 
-      subject { post :update, body.to_json }
+      subject { post :update, body: body.to_json }
 
       context "invalid sha" do
         let(:signifyd_sha) { "INVALID" }

@@ -1,4 +1,4 @@
-class CreateSpreeSignifydOrderScores < ActiveRecord::Migration
+class CreateSpreeSignifydOrderScores < SolidusSupport::Migration[4.2]
   def change
     create_table :spree_signifyd_order_scores do |t|
       t.integer :order_id

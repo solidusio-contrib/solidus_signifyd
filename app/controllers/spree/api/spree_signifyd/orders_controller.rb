@@ -4,7 +4,7 @@ module Spree::Api::SpreeSignifyd
 
     respond_to :json
 
-    before_filter :authorize, :load_order, :order_canceled_or_shipped
+    before_action :authorize, :load_order, :order_canceled_or_shipped
 
     def update
       SpreeSignifyd.set_score(order: @order, score: score)
@@ -16,7 +16,7 @@ module Spree::Api::SpreeSignifyd
         SpreeSignifyd.approve(order: @order)
       end
 
-      render nothing: true, status: 200
+      head 200
     end
 
     private
