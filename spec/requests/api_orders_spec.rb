@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Spree::Api::SpreeSignifyd
 
-  describe OrdersController do
+  describe 'orders' do
     describe 'POST #update' do
 
       let(:order_number) { "19418" }
@@ -38,14 +38,13 @@ module Spree::Api::SpreeSignifyd
           }
       }
 
+      let(:headers) { { 'X-SIGNIFYD-SEC-HMAC-SHA256': signifyd_sha } }
+
       before do
-        request.headers['HTTP_X_SIGNIFYD_SEC_HMAC_SHA256'] = signifyd_sha
         SpreeSignifyd::Config[:api_key] = 'ABCDE'
       end
 
-      routes { Spree::Core::Engine.routes }
-
-      subject { post :update, body: body.to_json }
+      subject { post '/api/spree_signifyd/orders', params: body.to_json, headers: headers }
 
       context "invalid sha" do
         let(:signifyd_sha) { "INVALID" }
