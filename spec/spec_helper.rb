@@ -39,7 +39,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.include RSpec::Rails::Matchers
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   # Ensure Suite is set to use transactions for speed.
   config.before :suite do

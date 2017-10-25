@@ -5,7 +5,7 @@ module SpreeSignifyd
 
     describe ".set_score" do
 
-      let(:order) { FactoryGirl.create(:order) }
+      let(:order) { FactoryBot.create(:order) }
 
       def set_score(score)
         SpreeSignifyd.set_score(order: order, score: score)
@@ -29,7 +29,7 @@ module SpreeSignifyd
 
     describe ".set_case_id" do
 
-      let(:order) { FactoryGirl.create(:order) }
+      let(:order) { FactoryBot.create(:order) }
       let(:case_id) { 1}
 
       subject { SpreeSignifyd.set_case_id(order: order, case_id: case_id) }
@@ -56,7 +56,7 @@ module SpreeSignifyd
 
     describe ".approve" do
 
-      let(:order) { FactoryGirl.create(:order_ready_to_ship, line_items_count: 1) }
+      let(:order) { FactoryBot.create(:order_ready_to_ship, line_items_count: 1) }
 
       before do
         order.shipments.each { |shipment| shipment.update_attributes!(state: 'pending') }
