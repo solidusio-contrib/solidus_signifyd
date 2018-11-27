@@ -2,6 +2,8 @@ module Spree::Api::SpreeSignifyd
   class OrdersController < ActionController::Base
     include SpreeSignifyd::RequestVerifier
 
+    protect_from_forgery unless: -> { request.format.json? }
+
     respond_to :json
 
     before_action :authorize, :load_order, :order_canceled_or_shipped
