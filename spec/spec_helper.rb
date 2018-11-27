@@ -13,58 +13,24 @@ end
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
-
-require "rspec/rails"
-
-require "database_cleaner"
-require "ffaker"
+require File.expand_path("dummy/config/environment.rb", __dir__)
 
 require "spree/testing_support/factories"
+require "solidus_support/extension/feature_helper"
 
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 
+ActiveJob::Base.queue_adapter = :test
+
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
-  config.mock_with :rspec
 
-  config.color = true
-  config.order = "random"
-
-  config.expose_current_running_example_as :example
-  config.fail_fast = ENV["FAIL_FAST"] || false
-
-  config.filter_run focus: true
-  config.run_all_when_everything_filtered = true
-  config.use_transactional_fixtures = false
-
-  config.include RSpec::Rails::Matchers
-  config.include FactoryBot::Syntax::Methods
-
-  # Ensure Suite is set to use transactions for speed.
-  config.before :suite do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with :truncation
-  end
-
-  # allow us to test various preference settings without cross contamination
   config.before :each do
+    # allow us to test various preference settings without cross contamination
     SpreeSignifyd::Config.reset
-  end
 
-  # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
-  config.before :each do
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
-    DatabaseCleaner.start
-    ActiveJob::Base.queue_adapter = :test
-
-    allow(Signifyd::Case).to receive(:create).and_return(
-      { code: 201, body: { investigationId: 123 } }
-    )
-  end
-
-  # After each spec clean the database.
-  config.after :each do
-    DatabaseCleaner.clean
+    allow(Signifyd::Case)
+      .to receive(:create)
+      .and_return(code: 201, body: { investigationId: 123 })
   end
 end
