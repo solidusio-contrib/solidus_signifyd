@@ -2,8 +2,6 @@ require 'active_model_serializers'
 
 module SpreeSignifyd
   class OrderSerializer < ActiveModel::Serializer
-    self.root = false
-
     attributes :purchase, :recipient, :card
     has_one :user, serializer: SpreeSignifyd::UserSerializer, root: "userAccount"
 

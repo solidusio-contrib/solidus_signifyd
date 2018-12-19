@@ -2,8 +2,6 @@ require 'active_model_serializers'
 
 module SpreeSignifyd
   class LineItemSerializer < ActiveModel::Serializer
-    self.root = false
-
     attributes :itemId, :itemName, :itemQuantity, :itemPrice
 
     def itemId

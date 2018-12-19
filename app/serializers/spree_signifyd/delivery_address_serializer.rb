@@ -2,8 +2,6 @@ require 'active_model_serializers'
 
 module SpreeSignifyd
   class DeliveryAddressSerializer < AddressSerializer
-    self.root = false
-
     def attributes
       hash = {}
       hash['deliveryAddress'] = address
