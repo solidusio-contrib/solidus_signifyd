@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
   s.requirements << "none"
 
-  s.add_dependency "active_model_serializers", "0.9.3"
+  s.add_dependency "active_model_serializers", "~> 0.10.7"
   s.add_dependency "signifyd", "~> 0.1.5"
   s.add_dependency "solidus_core", [">= 1.0", "< 3"]
   s.add_dependency "solidus_api", [">= 1.0", "< 3"]
