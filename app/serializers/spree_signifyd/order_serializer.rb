@@ -2,8 +2,7 @@ require 'active_model_serializers'
 
 module SpreeSignifyd
   class OrderSerializer < ActiveModel::Serializer
-    attributes :purchase, :recipient, :card
-    has_one :user, serializer: SpreeSignifyd::UserSerializer, root: "userAccount"
+    attributes :purchase, :recipient, :card, :userAccount
 
     def purchase
       build_purchase_information.tap do |purchase_info|
@@ -30,6 +29,11 @@ module SpreeSignifyd
       end
 
       card
+    end
+
+    def userAccount
+      return {} unless object.user
+      UserSerializer.new(object.user).serializable_hash
     end
 
     private
