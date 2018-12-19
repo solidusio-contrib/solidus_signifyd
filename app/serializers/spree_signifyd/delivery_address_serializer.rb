@@ -1,4 +1,4 @@
-require 'active_model/serializer'
+require 'active_model_serializers'
 
 module SpreeSignifyd
   class DeliveryAddressSerializer < AddressSerializer
