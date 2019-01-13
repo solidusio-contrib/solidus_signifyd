@@ -1,9 +1,7 @@
-require 'active_model/serializer'
+require 'active_model_serializers'
 
 module SpreeSignifyd
   class AddressSerializer < ActiveModel::Serializer
-    self.root = false
-
     attributes :address
 
     def address

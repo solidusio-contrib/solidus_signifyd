@@ -1,9 +1,7 @@
-require 'active_model/serializer'
+require 'active_model_serializers'
 
 module SpreeSignifyd
   class UserSerializer < ActiveModel::Serializer
-    self.root = false
-
     attributes :emailAddress, :username, :createdDate, :lastUpdateDate, :aggregateOrderCount, :aggregateOrderDollars, :phone
 
     # this is how to conditionally include attributes in AMS

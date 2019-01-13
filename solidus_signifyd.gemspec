@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = "solidus_signifyd"
-  s.version     = "1.1.0"
+  s.version     = "1.2.0"
   s.summary     = "Solidus extension for communicating with Signifyd to check orders for fraud."
   s.description = s.summary
 
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
   s.requirements << "none"
 
-  s.add_dependency "active_model_serializers", "0.9.3"
+  s.add_dependency "active_model_serializers", "~> 0.10.7"
   s.add_dependency "signifyd", "~> 0.1.5"
   s.add_dependency "solidus_core", [">= 1.0", "< 3"]
   s.add_dependency "solidus_api", [">= 1.0", "< 3"]

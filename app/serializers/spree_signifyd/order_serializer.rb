@@ -1,11 +1,8 @@
-require 'active_model/serializer'
+require 'active_model_serializers'
 
 module SpreeSignifyd
   class OrderSerializer < ActiveModel::Serializer
-    self.root = false
-
-    attributes :purchase, :recipient, :card
-    has_one :user, serializer: SpreeSignifyd::UserSerializer, root: "userAccount"
+    attributes :purchase, :recipient, :card, :userAccount
 
     def purchase
       build_purchase_information.tap do |purchase_info|
@@ -16,7 +13,7 @@ module SpreeSignifyd
     end
 
     def recipient
-      recipient = SpreeSignifyd::DeliveryAddressSerializer.new(object.ship_address).serializable_object
+      recipient = SpreeSignifyd::DeliveryAddressSerializer.new(object.ship_address).serializable_hash
       recipient[:confirmationEmail] = object.email
       recipient[:fullName] = object.ship_address.full_name
       recipient
@@ -27,11 +24,16 @@ module SpreeSignifyd
       card = {}
 
       if payment_source.present? && payment_source.instance_of?(Spree::CreditCard)
-        card = CreditCardSerializer.new(payment_source).serializable_object
-        card.merge!(SpreeSignifyd::BillingAddressSerializer.new(object.bill_address).serializable_object)
+        card = CreditCardSerializer.new(payment_source).serializable_hash
+        card.merge!(SpreeSignifyd::BillingAddressSerializer.new(object.bill_address).serializable_hash)
       end
 
       card
+    end
+
+    def userAccount
+      return {} unless object.user
+      UserSerializer.new(object.user).serializable_hash
     end
 
     private
@@ -57,7 +59,7 @@ module SpreeSignifyd
       order_products = []
 
       object.line_items.each do |li|
-        serialized_line_item = SpreeSignifyd::LineItemSerializer.new(li).serializable_object
+        serialized_line_item = SpreeSignifyd::LineItemSerializer.new(li).serializable_hash
         order_products << serialized_line_item
       end
 

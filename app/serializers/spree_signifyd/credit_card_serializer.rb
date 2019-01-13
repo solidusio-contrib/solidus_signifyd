@@ -1,9 +1,7 @@
-require 'active_model/serializer'
+require 'active_model_serializers'
 
 module SpreeSignifyd
   class CreditCardSerializer < ActiveModel::Serializer
-    self.root = false
-
     attributes :cardHolderName, :last4
 
     # this is how to conditionally include attributes in AMS
