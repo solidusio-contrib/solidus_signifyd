@@ -23,7 +23,7 @@ module SpreeSignifyd
       payment_source = latest_payment.try(:source)
       card = {}
 
-      if payment_source.present? && payment_source.instance_of?(Spree::CreditCard)
+      if payment_source.present? && payment_source.instance_of?(::Spree::CreditCard)
         card = CreditCardSerializer.new(payment_source).serializable_hash
         card.merge!(SpreeSignifyd::BillingAddressSerializer.new(object.bill_address).serializable_hash)
       end
