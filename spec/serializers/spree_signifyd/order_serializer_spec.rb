@@ -103,7 +103,7 @@ module SpreeSignifyd
 
         context "non credit card payment" do
           it "contains no data" do
-            allow_any_instance_of(Spree::CreditCard).to receive(:instance_of?).and_return(false)
+            allow_any_instance_of(::Spree::CreditCard).to receive(:instance_of?).and_return(false)
             expect(serialized_order["card"]).to eq({})
           end
         end

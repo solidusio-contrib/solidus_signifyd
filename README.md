@@ -1,10 +1,10 @@
 Solidus Signifyd
 ================
 
+[![CircleCI](https://circleci.com/gh/solidusio-contrib/solidus_signifyd.svg?style=svg)](https://circleci.com/gh/solidusio-contrib/solidus_signifyd)
+
 Integration with Signifyd that implements a fraud check prior to marking a
 shipment as ready to be shipped.
-
-[![Build Status](https://travis-ci.org/solidusio/solidus_signifyd.svg?branch=master)](https://travis-ci.org/solidusio/solidus_signifyd)
 
 * All orders are sent to SIGNIFYD for scoring when they transition to complete.
 * Risk analysis is returned from SIGNIFYD via a webhook and added to order.
