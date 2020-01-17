@@ -1,4 +1,4 @@
-module SpreeSignifyd
+module SolidusSignifyd
   module RequestVerifier
 
     def build_sha(key, message)

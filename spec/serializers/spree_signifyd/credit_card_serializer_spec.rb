@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe CreditCardSerializer do
     let(:credit_card) { create(:credit_card) }
     let(:serialized_credit_card) { JSON.parse(CreditCardSerializer.new(credit_card).to_json) }

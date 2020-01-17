@@ -1,4 +1,4 @@
-module SpreeSignifyd
+module SolidusSignifyd
   class OrderScore < ActiveRecord::Base
     class MissingCaseId < StandardError; end
     self.table_name = :spree_signifyd_order_scores
@@ -8,7 +8,7 @@ module SpreeSignifyd
     validates :order, presence: true
 
     def build_case_url
-      signifyd_url = SpreeSignifyd::Config[:signifyd_dashboard_case_url]
+      signifyd_url = SolidusSignifyd::Config[:signifyd_dashboard_case_url]
 
       raise MissingCaseId if case_id.blank?
 

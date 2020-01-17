@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-module Spree::Api::SpreeSignifyd
-
+module Spree::Api::SolidusSignifyd
   describe 'orders' do
     describe 'POST #update' do
 
@@ -41,10 +40,10 @@ module Spree::Api::SpreeSignifyd
       let(:headers) { { 'X-SIGNIFYD-SEC-HMAC-SHA256': signifyd_sha } }
 
       before do
-        SpreeSignifyd::Config[:api_key] = 'ABCDE'
+        SolidusSignifyd::Config[:api_key] = 'ABCDE'
       end
 
-      subject { post '/api/spree_signifyd/orders', params: body.to_json, headers: headers }
+      subject { post '/api/solidus_signifyd/orders', params: body.to_json, headers: headers }
 
       context "invalid sha" do
         let(:signifyd_sha) { "INVALID" }
@@ -75,7 +74,7 @@ module Spree::Api::SpreeSignifyd
 
           it "returns without trying to act on the order" do
             allow_any_instance_of(Spree::Order).to receive(:shipped?).and_return(true)
-            expect(SpreeSignifyd).not_to receive(:approve)
+            expect(SolidusSignifyd).not_to receive(:approve)
             expect_any_instance_of(Spree::Order).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response.status).to eq(200)
@@ -86,7 +85,7 @@ module Spree::Api::SpreeSignifyd
           before(:each) { order.cancel! }
 
           it "returns without trying to act on the order" do
-            expect(SpreeSignifyd).not_to receive(:approve)
+            expect(SolidusSignifyd).not_to receive(:approve)
             expect_any_instance_of(Spree::Order).not_to receive(:cancel!)
             expect { subject }.not_to raise_error
             expect(response.status).to eq(200)
@@ -131,7 +130,7 @@ module Spree::Api::SpreeSignifyd
               before(:each) { order.update_attribute(:approved_at, Time.now) }
 
               it "does not call approve" do
-                expect(SpreeSignifyd).not_to receive(:approve)
+                expect(SolidusSignifyd).not_to receive(:approve)
                 subject
               end
             end
@@ -148,14 +147,14 @@ module Spree::Api::SpreeSignifyd
                 after(:each) { body['reviewDisposition'] = @original_review_disposition }
 
                 it "calls approve" do
-                  expect(SpreeSignifyd).to receive(:approve).with(order: order)
+                  expect(SolidusSignifyd).to receive(:approve).with(order: order)
                   subject
                 end
               end
 
               context "the reviewDisposition is not GOOD" do
                 it "does not call approve" do
-                  expect(SpreeSignifyd).not_to receive(:approve)
+                  expect(SolidusSignifyd).not_to receive(:approve)
                   subject
                 end
               end
@@ -165,13 +164,13 @@ module Spree::Api::SpreeSignifyd
 
                 before(:each) do
                   @original_score = body['adjustedScore']
-                  body['adjustedScore'] = SpreeSignifyd::Config[:signifyd_score_threshold] + 1
+                  body['adjustedScore'] = SolidusSignifyd::Config[:signifyd_score_threshold] + 1
                 end
 
                 after(:each) { body['adjustedScore'] = @original_score }
 
                 it "approves the order" do
-                  expect(SpreeSignifyd).to receive(:approve).with(order: order)
+                  expect(SolidusSignifyd).to receive(:approve).with(order: order)
                   subject
                 end
               end
@@ -182,13 +181,13 @@ module Spree::Api::SpreeSignifyd
 
                 before(:each) do
                   @original_score = body['adjustedScore']
-                  body['adjustedScore'] = SpreeSignifyd::Config[:signifyd_score_threshold] - 1
+                  body['adjustedScore'] = SolidusSignifyd::Config[:signifyd_score_threshold] - 1
                 end
 
                 after(:each) { body['adjustedScore'] = @original_score }
 
                 it "does not approve the order" do
-                  expect(SpreeSignifyd).not_to receive(:approve)
+                  expect(SolidusSignifyd).not_to receive(:approve)
                   subject
                 end
               end

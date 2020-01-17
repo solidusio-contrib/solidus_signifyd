@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe UserSerializer do
     let(:user) { create(:user) }
     let!(:incomplete_order) { create(:order, user: user) }

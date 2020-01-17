@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe RequestVerifier do
     include RequestVerifier
 

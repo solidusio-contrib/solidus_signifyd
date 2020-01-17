@@ -1,6 +1,6 @@
 require 'active_model_serializers'
 
-module SpreeSignifyd
+module SolidusSignifyd
   class UserSerializer < ActiveModel::Serializer
     attributes :emailAddress, :username, :createdDate, :lastUpdateDate, :aggregateOrderCount, :aggregateOrderDollars, :phone
 

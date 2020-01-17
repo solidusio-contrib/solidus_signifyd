@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe LineItemSerializer do
     let(:line_item) { create(:line_item) }
     let(:serialized_line_item) { JSON.parse(LineItemSerializer.new(line_item).to_json) }

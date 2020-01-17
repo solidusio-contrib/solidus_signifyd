@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe OrderSerializer do
     let(:order) { create :shipped_order,
       line_items_count: 1,
@@ -71,7 +71,7 @@ module SpreeSignifyd
         end
 
         it "contains a products node" do
-          expect(purchase['products']).to eq [ JSON.parse(SpreeSignifyd::LineItemSerializer.new(line_item).to_json) ]
+          expect(purchase['products']).to eq [ JSON.parse(SolidusSignifyd::LineItemSerializer.new(line_item).to_json) ]
         end
       end
 

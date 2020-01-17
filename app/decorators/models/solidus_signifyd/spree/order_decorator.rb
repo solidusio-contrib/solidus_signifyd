@@ -1,8 +1,8 @@
-module SpreeSignifyd
+module SolidusSignifyd
   module Spree
     module OrderDecorator
       def self.prepended(base)
-        base.include SpreeSignifyd::OrderConcerns
+        base.include SolidusSignifyd::OrderConcerns
       end
 
       ::Spree::Order.prepend self
