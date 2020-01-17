@@ -1,6 +1,6 @@
 require 'active_model_serializers'
 
-module SpreeSignifyd
+module SolidusSignifyd
   class LineItemSerializer < ActiveModel::Serializer
     attributes :itemId, :itemName, :itemQuantity, :itemPrice
 

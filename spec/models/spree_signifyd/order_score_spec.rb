@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpreeSignifyd::OrderScore, type: :model do
+describe SolidusSignifyd::OrderScore, type: :model do
   let!(:order) { create(:order_ready_to_ship, line_items_count: 1) }
   let!(:order_score) { described_class.create!(order: order, score: 100, case_id: 1) }
 
@@ -11,7 +11,7 @@ describe SpreeSignifyd::OrderScore, type: :model do
       let!(:order_score) { described_class.create!(order: order, score: 100, case_id: nil) }
 
       it 'will raise a MissingCaseId error' do
-        expect{ subject }.to raise_error(SpreeSignifyd::OrderScore::MissingCaseId) 
+        expect{ subject }.to raise_error(SolidusSignifyd::OrderScore::MissingCaseId)
       end
     end
 

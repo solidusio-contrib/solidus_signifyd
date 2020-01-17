@@ -1,6 +1,6 @@
 require 'active_model_serializers'
 
-module SpreeSignifyd
+module SolidusSignifyd
   class DeliveryAddressSerializer < AddressSerializer
     def attributes(*args)
       hash = {}

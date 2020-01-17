@@ -1,16 +1,16 @@
-module SpreeSignifyd::OrderConcerns
+module SolidusSignifyd::OrderConcerns
   extend ActiveSupport::Concern
 
   included do
     Spree::Order.state_machine.after_transition to: :complete, unless: :approved? do |order, transition|
       if order.send_to_signifyd?
-        SpreeSignifyd.create_case(order_number: order.number)
+        SolidusSignifyd.create_case(order_number: order.number)
       else
-        SpreeSignifyd.approve(order: order)
+        SolidusSignifyd.approve(order: order)
       end
     end
 
-    has_one :signifyd_order_score, class_name: "SpreeSignifyd::OrderScore"
+    has_one :signifyd_order_score, class_name: "SolidusSignifyd::OrderScore"
 
     prepend(InstanceMethods)
   end
@@ -26,7 +26,7 @@ module SpreeSignifyd::OrderConcerns
 
     def send_to_signifyd?
       !approved? &&
-      !(SpreeSignifyd::Config[:exclude_store_credit_orders] && paid_completely_with_store_credit?)
+      !(SolidusSignifyd::Config[:exclude_store_credit_orders] && paid_completely_with_store_credit?)
     end
 
     private

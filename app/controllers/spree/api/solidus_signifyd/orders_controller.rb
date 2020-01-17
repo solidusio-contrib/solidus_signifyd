@@ -1,6 +1,6 @@
-module Spree::Api::SpreeSignifyd
+module Spree::Api::SolidusSignifyd
   class OrdersController < ActionController::Base
-    include SpreeSignifyd::RequestVerifier
+    include SolidusSignifyd::RequestVerifier
 
     protect_from_forgery unless: -> { request.format.json? }
 
@@ -9,13 +9,13 @@ module Spree::Api::SpreeSignifyd
     before_action :authorize, :load_order, :order_canceled_or_shipped
 
     def update
-      SpreeSignifyd.set_score(order: @order, score: score)
-      SpreeSignifyd.set_case_id(order: @order, case_id: case_id)
+      SolidusSignifyd.set_score(order: @order, score: score)
+      SolidusSignifyd.set_case_id(order: @order, case_id: case_id)
 
       if is_fraudulent?
         @order.cancel!
       elsif should_approve?
-        SpreeSignifyd.approve(order: @order)
+        SolidusSignifyd.approve(order: @order)
       end
 
       head 200
@@ -25,7 +25,7 @@ module Spree::Api::SpreeSignifyd
 
     def authorize
       request_sha = request.headers['HTTP_X_SIGNIFYD_SEC_HMAC_SHA256']
-      computed_sha = build_sha(SpreeSignifyd::Config[:api_key], request.raw_post)
+      computed_sha = build_sha(SolidusSignifyd::Config[:api_key], request.raw_post)
 
       if !Devise.secure_compare(request_sha, computed_sha)
         logger.error("computed digest does not match provided digest. computed=#{computed_sha.inspect} provided=#{request_sha.inspect}")
@@ -52,7 +52,7 @@ module Spree::Api::SpreeSignifyd
     end
 
     def should_approve?
-      body['reviewDisposition'] == 'GOOD' || SpreeSignifyd.score_above_threshold?(score)
+      body['reviewDisposition'] == 'GOOD' || SolidusSignifyd.score_above_threshold?(score)
     end
 
     def score

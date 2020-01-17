@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpreeSignifyd
+module SolidusSignifyd
   describe DeliveryAddressSerializer do
     let(:delivery_address) { create(:address) }
     let(:serialized_address) { JSON.parse(DeliveryAddressSerializer.new(delivery_address).to_json) }

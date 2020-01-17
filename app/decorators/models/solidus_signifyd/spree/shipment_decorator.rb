@@ -1,4 +1,4 @@
-module SpreeSignifyd
+module SolidusSignifyd
   module Spree
     module ShipmentDecorator
       def determine_state(order)

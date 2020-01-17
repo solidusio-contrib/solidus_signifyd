@@ -1,4 +1,4 @@
-module SpreeSignifyd
+module SolidusSignifyd
   class Engine < Rails::Engine
     require "spree/core"
     isolate_namespace Spree
@@ -10,8 +10,8 @@ module SpreeSignifyd
     end
 
     initializer "spree.signifyd.environment", before: :load_config_initializers do |app|
-      SpreeSignifyd::Config = Spree::SignifydConfiguration.new
-      SpreeSignifyd::Config.use_static_preferences!
+      SolidusSignifyd::Config = Spree::SignifydConfiguration.new
+      SolidusSignifyd::Config.use_static_preferences!
     end
 
     def self.activate
