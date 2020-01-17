@@ -1,13 +1,16 @@
+# frozen_string_literal: true
+
+require 'devise'
+require 'signifyd'
 require 'solidus_core'
 require 'solidus_support'
-require 'signifyd'
-require 'solidus_signifyd/create_signifyd_case'
+
+require 'solidus_signifyd/version'
 require 'solidus_signifyd/engine'
+require 'solidus_signifyd/create_signifyd_case'
 require 'solidus_signifyd/request_verifier'
-require 'devise'
 
 module SolidusSignifyd
-
   module_function
 
   def set_score(order:, score:)
@@ -20,7 +23,7 @@ module SolidusSignifyd
 
   def set_case_id(order:, case_id:)
     if order.signifyd_order_score
-      order.signifyd_order_score.update_attributes!(case_id: case_id)
+      order.signifyd_order_score.update!(case_id: case_id)
     else
       # If we have a caseId we can expect to have a score so this should
       # not happen. If that's the case we simply fail without raising an
@@ -44,5 +47,4 @@ module SolidusSignifyd
   def score_above_threshold?(score)
     score > SolidusSignifyd::Config[:signifyd_score_threshold]
   end
-
 end

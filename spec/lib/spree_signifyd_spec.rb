@@ -59,7 +59,7 @@ module SolidusSignifyd
       let(:order) { FactoryBot.create(:order_ready_to_ship, line_items_count: 1) }
 
       before do
-        order.shipments.each { |shipment| shipment.update_attributes!(state: 'pending') }
+        order.shipments.each { |shipment| shipment.update!(state: 'pending') }
         order.updater.update_shipment_state
       end
 
