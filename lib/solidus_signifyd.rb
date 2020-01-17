@@ -23,7 +23,7 @@ module SolidusSignifyd
 
   def set_case_id(order:, case_id:)
     if order.signifyd_order_score
-      order.signifyd_order_score.update_attributes!(case_id: case_id)
+      order.signifyd_order_score.update!(case_id: case_id)
     else
       # If we have a caseId we can expect to have a score so this should
       # not happen. If that's the case we simply fail without raising an

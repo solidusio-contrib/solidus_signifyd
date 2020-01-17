@@ -10,7 +10,7 @@ module SolidusSignifyd
     let(:serialized_user) { JSON.parse(UserSerializer.new(user).to_json) }
 
     before do
-      old_complete_order.update_attributes(completed_at: 30.days.ago)
+      old_complete_order.update(completed_at: 30.days.ago)
     end
 
     context "node values" do
