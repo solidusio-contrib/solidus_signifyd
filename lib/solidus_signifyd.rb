@@ -1,13 +1,16 @@
+# frozen_string_literal: true
+
+require 'devise'
+require 'signifyd'
 require 'solidus_core'
 require 'solidus_support'
-require 'signifyd'
-require 'solidus_signifyd/create_signifyd_case'
+
+require 'solidus_signifyd/version'
 require 'solidus_signifyd/engine'
+require 'solidus_signifyd/create_signifyd_case'
 require 'solidus_signifyd/request_verifier'
-require 'devise'
 
 module SolidusSignifyd
-
   module_function
 
   def set_score(order:, score:)
@@ -44,5 +47,4 @@ module SolidusSignifyd
   def score_above_threshold?(score)
     score > SolidusSignifyd::Config[:signifyd_score_threshold]
   end
-
 end

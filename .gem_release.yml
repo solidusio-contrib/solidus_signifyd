@@ -1,0 +1,5 @@
+bump:
+  recurse: false
+  file: 'lib/solidus_signifyd/version.rb'
+  message: Bump SolidusSignifyd to %{version}
+  tag: true
