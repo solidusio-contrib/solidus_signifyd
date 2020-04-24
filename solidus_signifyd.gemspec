@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'active_model_serializers', '~> 0.10.7'
   s.add_dependency 'devise'
   s.add_dependency 'signifyd', '~> 0.1.5'
-  s.add_dependency 'solidus_support', '~> 0.4.0'
+  s.add_dependency 'solidus_support', '~> 0.5'
 
   s.add_development_dependency 'json-schema'
   s.add_development_dependency 'solidus_dev_support'
