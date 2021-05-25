@@ -13,7 +13,7 @@ module SolidusSignifyd
     end
 
     def cardHolderName
-      "#{object.first_name} #{object.last_name}"
+      "#{SolidusSignifyd::Name.name_value(object)}"
     end
 
     def last4
