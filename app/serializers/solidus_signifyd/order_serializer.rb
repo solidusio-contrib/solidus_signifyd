@@ -15,7 +15,7 @@ module SolidusSignifyd
     def recipient
       recipient = SolidusSignifyd::DeliveryAddressSerializer.new(object.ship_address).serializable_hash
       recipient[:confirmationEmail] = object.email
-      recipient[:fullName] = object.ship_address.full_name
+      recipient['fullName'] = SolidusSignifyd::Name.name_value(object.ship_address)
       recipient
     end
 

@@ -7,7 +7,7 @@ module SolidusSignifyd
 
     context "node values" do
       it "cardHolderName" do
-        expect(serialized_credit_card['cardHolderName']).to eq "#{credit_card.first_name} #{credit_card.last_name}"
+        expect(serialized_credit_card['cardHolderName']).to eq SolidusSignifyd::Name.name_value(credit_card)
       end
 
       it "last4" do
